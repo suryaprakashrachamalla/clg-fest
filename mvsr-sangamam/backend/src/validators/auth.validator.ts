@@ -37,6 +37,20 @@ export const participantSchema = z.object({
   studentId: studentIdSchema,
 });
 
+export const updateProfileSchema = z.object({
+  name: nameSchema.optional(),
+  phone: phoneSchema.optional(),
+  college: collegeSchema.optional(),
+  studentId: studentIdSchema,
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password required"),
+  newPassword: z.string().min(8, "Use at least 8 characters").max(128),
+});
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ParticipantInput = z.infer<typeof participantSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

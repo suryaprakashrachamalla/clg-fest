@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
-import { signupSchema, loginSchema } from "../validators/auth.validator";
+import { signupSchema, loginSchema, updateProfileSchema, changePasswordSchema } from "../validators/auth.validator";
 import { SESSION_COOKIE, SESSION_TTL_SECONDS } from "../utils/jwt.util";
 import { sendSuccess } from "../utils/response.util";
 import { AuthenticatedRequest } from "../types";
@@ -55,6 +55,26 @@ export class AuthController {
     }
     const { passwordHash: _hash, ...safeUser } = req.user;
     return sendSuccess(res, { user: safeUser });
+  }
+
+  async updateProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const input = updateProfileSchema.parse(req.body);
+      const updatedUser = await authService.updateProfile(req.user!.id, input);
+      return sendSuccess(res, { user: updatedUser });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async changePassword(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const input = changePasswordSchema.parse(req.body);
+      const result = await authService.changePassword(req.user!.id, input);
+      return sendSuccess(res, result);
+    } catch (err) {
+      next(err);
+    }
   }
 }
 

@@ -14,7 +14,15 @@ export default async function DashboardPage() {
 
   return (
     <DashboardClient
-      user={{ id: user.id, name: user.name, email: user.email, role: user.role }}
+      user={{
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        college: user.college,
+        studentId: user.studentId,
+        role: user.role,
+      }}
       registrations={registrations}
       memberships={memberships}
     />

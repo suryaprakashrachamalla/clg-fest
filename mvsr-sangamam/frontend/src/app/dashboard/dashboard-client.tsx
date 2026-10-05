@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Calendar,
   MapPin,
@@ -20,9 +21,15 @@ import {
   UserCheck,
   Ticket,
   Sparkles,
+  Settings,
+  KeyRound,
+  User,
+  Check,
+  Loader2,
 } from "lucide-react";
 import { FEST } from "@/config/fest";
 import { fmtDate, fmtTime, formatINR } from "@/lib/format";
+import { soundFx } from "@/utils/audio";
 
 interface RegistrationItem {
   id: string;
@@ -73,6 +80,9 @@ interface Props {
     id: string;
     name: string;
     email: string;
+    phone?: string;
+    college?: string;
+    studentId?: string | null;
     role: string;
   };
   registrations: RegistrationItem[];
@@ -80,6 +90,7 @@ interface Props {
 }
 
 export function DashboardClient({ user, registrations, memberships }: Props) {
+  const router = useRouter();
   const [selectedQr, setSelectedQr] = useState<{
     qrImage: string;
     title: string;
@@ -88,6 +99,74 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
   } | null>(null);
 
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
+  // Settings Modal State
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<"profile" | "password">("profile");
+  const [profileForm, setProfileForm] = useState({
+    name: user.name,
+    phone: user.phone || "",
+    college: user.college || "",
+    studentId: user.studentId || "",
+  });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    setProfileMsg(null);
+    try {
+      const res = await fetch("/api/auth/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update profile");
+      soundFx.playSuccessTone();
+      setProfileMsg({ type: "success", text: "Profile details updated successfully!" });
+      router.refresh();
+    } catch (err: any) {
+      setProfileMsg({ type: "error", text: err.message || "Failed to update profile" });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setProfileMsg({ type: "error", text: "New passwords do not match" });
+      return;
+    }
+    setProfileSaving(true);
+    setProfileMsg(null);
+    try {
+      const res = await fetch("/api/auth/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to change password");
+      soundFx.playSuccessTone();
+      setProfileMsg({ type: "success", text: "Password changed successfully!" });
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (err: any) {
+      setProfileMsg({ type: "error", text: err.message || "Failed to change password" });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -116,8 +195,19 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
             Explore Events
           </Link>
           <Link href="/join" className="btn-ghost text-xs px-4 py-2.5 rounded-xl font-semibold">
-            Join Team with Code
+            Join Team
           </Link>
+          <button
+            onClick={() => {
+              soundFx.playClickTone();
+              setSettingsOpen(true);
+            }}
+            className="btn-ghost text-xs px-3.5 py-2.5 rounded-xl font-semibold flex items-center gap-1.5"
+            title="Account Settings"
+          >
+            <Settings className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="hidden sm:inline">Settings</span>
+          </button>
         </div>
       </div>
 
@@ -471,6 +561,226 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Account Settings & Profile / Security Modal */}
+      {settingsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#0D101A] border border-[#D4AF37]/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full relative shadow-2xl space-y-6">
+            <button
+              onClick={() => {
+                setSettingsOpen(false);
+                setProfileMsg(null);
+              }}
+              className="absolute top-5 right-5 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div>
+              <div className="text-[10px] uppercase tracking-wider text-[#D4AF37] font-bold">
+                Account Settings
+              </div>
+              <h3 className="font-display text-2xl font-bold text-white mt-1">
+                Profile &amp; Security
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                Manage your personal participant credentials and account password.
+              </p>
+            </div>
+
+            {/* Tab switch */}
+            <div className="flex rounded-xl bg-black/40 p-1 border border-white/10 text-xs font-medium">
+              <button
+                type="button"
+                onClick={() => {
+                  setSettingsTab("profile");
+                  setProfileMsg(null);
+                }}
+                className={`flex-1 py-2 rounded-lg font-bold transition flex items-center justify-center gap-1.5 ${
+                  settingsTab === "profile"
+                    ? "bg-[#D4AF37] text-black shadow"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <User className="w-3.5 h-3.5" />
+                Profile Info
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSettingsTab("password");
+                  setProfileMsg(null);
+                }}
+                className={`flex-1 py-2 rounded-lg font-bold transition flex items-center justify-center gap-1.5 ${
+                  settingsTab === "password"
+                    ? "bg-[#D4AF37] text-black shadow"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                Password &amp; Security
+              </button>
+            </div>
+
+            {profileMsg && (
+              <div
+                className={`p-3 rounded-xl text-xs flex items-center gap-2 ${
+                  profileMsg.type === "success"
+                    ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                    : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                }`}
+              >
+                {profileMsg.type === "success" ? (
+                  <Check className="w-4 h-4 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                )}
+                <span>{profileMsg.text}</span>
+              </div>
+            )}
+
+            {settingsTab === "profile" ? (
+              <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profileForm.name}
+                    onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-zinc-300 font-semibold mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={profileForm.phone}
+                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      placeholder="10-digit mobile"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-300 font-semibold mb-1">
+                      Student ID / Roll No.
+                    </label>
+                    <input
+                      type="text"
+                      value={profileForm.studentId}
+                      onChange={(e) => setProfileForm({ ...profileForm, studentId: e.target.value })}
+                      placeholder="e.g. 2451-22-733-001"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">
+                    College / University
+                  </label>
+                  <input
+                    type="text"
+                    value={profileForm.college}
+                    onChange={(e) => setProfileForm({ ...profileForm, college: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsOpen(false)}
+                    className="btn-ghost px-4 py-2.5 rounded-xl font-bold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={profileSaving}
+                    className="btn-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-1.5"
+                  >
+                    {profileSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordForm.currentPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                    placeholder="Enter current password"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={8}
+                    value={passwordForm.newPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                    placeholder="At least 8 characters"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-zinc-300 font-semibold mb-1">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={8}
+                    value={passwordForm.confirmPassword}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                    placeholder="Re-type new password"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsOpen(false)}
+                    className="btn-ghost px-4 py-2.5 rounded-xl font-bold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={profileSaving}
+                    className="btn-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-1.5"
+                  >
+                    {profileSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

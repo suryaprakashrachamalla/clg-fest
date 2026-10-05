@@ -16,3 +16,9 @@ authRouter.post("/login", rateLimitMiddleware(15, 60_000, "login"), (req, res, n
 authRouter.post("/logout", (req, res) => authController.logout(req, res));
 
 authRouter.get("/me", requireAuth, (req, res) => authController.getMe(req, res));
+
+authRouter.put("/profile", requireAuth, (req, res, next) => authController.updateProfile(req, res, next));
+
+authRouter.put("/password", requireAuth, rateLimitMiddleware(5, 60_000, "password_change"), (req, res, next) =>
+  authController.changePassword(req, res, next)
+);

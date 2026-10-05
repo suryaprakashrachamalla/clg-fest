@@ -74,6 +74,50 @@ export class AuthService {
       },
     };
   }
+
+  async updateProfile(userId: string, input: any) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new HttpError(404, "User not found.", "NOT_FOUND");
+
+    const data: any = {};
+    if (input.name !== undefined) data.name = input.name;
+    if (input.phone !== undefined) data.phone = input.phone;
+    if (input.college !== undefined) data.college = input.college;
+    if (input.studentId !== undefined) data.studentId = input.studentId;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data,
+    });
+
+    return {
+      id: updated.id,
+      name: updated.name,
+      email: updated.email,
+      phone: updated.phone,
+      college: updated.college,
+      studentId: updated.studentId,
+      role: updated.role,
+    };
+  }
+
+  async changePassword(userId: string, input: { currentPassword: string; newPassword: string }) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new HttpError(404, "User not found.", "NOT_FOUND");
+
+    const valid = await bcrypt.compare(input.currentPassword, user.passwordHash);
+    if (!valid) {
+      throw new HttpError(400, "Current password is incorrect.", "BAD_PASSWORD");
+    }
+
+    const passwordHash = await bcrypt.hash(input.newPassword, 12);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    return { success: true, message: "Password updated successfully." };
+  }
 }
 
 export const authService = new AuthService();
