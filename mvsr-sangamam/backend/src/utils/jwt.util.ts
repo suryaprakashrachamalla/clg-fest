@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { ENV } from "../config/env.config";
 import { SessionPayload } from "../types";
 
@@ -17,7 +18,7 @@ function base64UrlDecode(str: string): Uint8Array {
   return Buffer.from(str, "base64url");
 }
 
-async function getKey(): Promise<CryptoKey> {
+async function getKey(): Promise<any> {
   const secret = ENV.AUTH_SECRET || "default_super_secret_session_key_sangamam_2026_mvsr_32chars";
   return await crypto.subtle.importKey(
     "raw",

@@ -40,7 +40,7 @@ app.use(
   })
 );
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser() as any);
 
 // Health check endpoint
 app.get("/health", (_req, res) => {
