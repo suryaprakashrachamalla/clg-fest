@@ -1,7 +1,5 @@
 import { Event } from "@prisma/client";
 import { prisma } from "../db/prisma.client";
-import { eventRepository } from "../repositories/event.repository";
-import { registrationRepository } from "../repositories/registration.repository";
 import { FEST } from "../config/fest.config";
 import { EventInput, eventInputToData, Prize, Coordinator, Faq } from "../validators/event.validator";
 import { HttpError } from "../utils/response.util";
@@ -41,7 +39,10 @@ export function toPublicEvent(e: Event, confirmedUnits: number) {
 export class EventService {
   async listPublicEvents() {
     const [events, rows] = await Promise.all([
-      eventRepository.findPublished(),
+      prisma.event.findMany({
+        where: { isPublished: true },
+        orderBy: [{ sortOrder: "asc" }, { startsAt: "asc" }],
+      }),
       prisma.registration.groupBy({
         by: ["eventId"],
         where: { status: "CONFIRMED" },
@@ -54,25 +55,23 @@ export class EventService {
   }
 
   async getPublicEvent(slug: string) {
-    const e = await eventRepository.findBySlug(slug);
+    const e = await prisma.event.findUnique({ where: { slug } });
     if (!e || !e.isPublished) return null;
 
-    const confirmed = await registrationRepository.count({
-      eventId: e.id,
-      status: "CONFIRMED",
+    const confirmed = await prisma.registration.count({
+      where: { eventId: e.id, status: "CONFIRMED" },
     });
     return toPublicEvent(e, confirmed);
   }
 
   async getAvailability(slug: string) {
-    const e = await eventRepository.findBySlug(slug);
+    const e = await prisma.event.findUnique({ where: { slug } });
     if (!e || !e.isPublished) {
       throw new HttpError(404, "Event not found.", "NOT_FOUND");
     }
 
-    const confirmed = await registrationRepository.count({
-      eventId: e.id,
-      status: "CONFIRMED",
+    const confirmed = await prisma.registration.count({
+      where: { eventId: e.id, status: "CONFIRMED" },
     });
     const held = Math.max(e.slotsTaken - confirmed, 0);
     const remaining = e.capacity == null ? null : Math.max(e.capacity - e.slotsTaken, 0);
@@ -90,8 +89,8 @@ export class EventService {
 
   async getPublicStats() {
     const [events, participantsLead, participantsMembers, categories] = await Promise.all([
-      eventRepository.countPublished(),
-      registrationRepository.count({ status: "CONFIRMED", team: { is: null } }),
+      prisma.event.count({ where: { isPublished: true } }),
+      prisma.registration.count({ where: { status: "CONFIRMED", team: { is: null } } }),
       prisma.teamMember.count({ where: { team: { status: "ACTIVE" } } }),
       prisma.event.groupBy({ by: ["category"], where: { isPublished: true } }),
     ]);
@@ -106,47 +105,52 @@ export class EventService {
   }
 
   async createEvent(input: EventInput) {
-    const existing = await eventRepository.findBySlug(input.slug);
+    const existing = await prisma.event.findUnique({ where: { slug: input.slug } });
     if (existing) {
       throw new HttpError(409, "An event with this slug already exists.", "SLUG_TAKEN");
     }
     const data = eventInputToData(input);
-    const event = await eventRepository.create({
-      ...data,
-      prizes: data.prizes as any,
-      coordinators: data.coordinators as any,
-      faqs: data.faqs as any,
+    const event = await prisma.event.create({
+      data: {
+        ...data,
+        prizes: data.prizes as any,
+        coordinators: data.coordinators as any,
+        faqs: data.faqs as any,
+      },
     });
     return { id: event.id, slug: event.slug };
   }
 
   async updateEvent(id: string, input: EventInput) {
-    const existing = await eventRepository.findById(id);
+    const existing = await prisma.event.findUnique({ where: { id } });
     if (!existing) throw new HttpError(404, "Event not found.", "NOT_FOUND");
 
     if (input.slug !== existing.slug) {
-      const slugClash = await eventRepository.findBySlug(input.slug);
+      const slugClash = await prisma.event.findUnique({ where: { slug: input.slug } });
       if (slugClash && slugClash.id !== id) {
         throw new HttpError(409, "An event with this slug already exists.", "SLUG_TAKEN");
       }
     }
 
     const data = eventInputToData(input);
-    const updated = await eventRepository.update(id, {
-      ...data,
-      prizes: data.prizes as any,
-      coordinators: data.coordinators as any,
-      faqs: data.faqs as any,
+    const updated = await prisma.event.update({
+      where: { id },
+      data: {
+        ...data,
+        prizes: data.prizes as any,
+        coordinators: data.coordinators as any,
+        faqs: data.faqs as any,
+      },
     });
     return { id: updated.id, slug: updated.slug };
   }
 
   async deleteEvent(id: string) {
-    const regCount = await registrationRepository.count({ eventId: id });
+    const regCount = await prisma.registration.count({ where: { eventId: id } });
     if (regCount > 0) {
       throw new HttpError(400, "Cannot delete an event that has registrations.", "HAS_REGISTRATIONS");
     }
-    await eventRepository.delete(id);
+    await prisma.event.delete({ where: { id } });
     return { success: true };
   }
 }

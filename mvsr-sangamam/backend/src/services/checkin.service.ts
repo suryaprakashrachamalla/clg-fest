@@ -1,11 +1,13 @@
 import { Prisma, User } from "@prisma/client";
-import { prisma } from "../db/prisma.client";
-import { registrationRepository } from "../repositories/registration.repository";
+import { prisma, REGISTRATION_INCLUDE } from "../db/prisma.client";
 import { HttpError } from "../utils/response.util";
 
 export class CheckinService {
   async getVerificationCard(token: string) {
-    const r = await registrationRepository.findByQrToken(token);
+    const r = await prisma.registration.findUnique({
+      where: { qrToken: token },
+      include: REGISTRATION_INCLUDE,
+    });
     if (!r) return null;
     return {
       registrationId: r.id,
@@ -44,7 +46,10 @@ export class CheckinService {
   }
 
   async processCheckIn(token: string, organizer: User) {
-    const r = await registrationRepository.findByQrToken(token);
+    const r = await prisma.registration.findUnique({
+      where: { qrToken: token },
+      include: REGISTRATION_INCLUDE,
+    });
     if (!r) throw new HttpError(404, "Invalid QR code.", "INVALID");
     if (r.status !== "CONFIRMED") throw new HttpError(409, "Registration is not confirmed.", "NOT_CONFIRMED");
 

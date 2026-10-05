@@ -1,10 +1,5 @@
-import { prisma } from "../db/prisma.client";
+import { prisma, REGISTRATION_INCLUDE } from "../db/prisma.client";
 import { Role } from "@prisma/client";
-import { eventRepository } from "../repositories/event.repository";
-import { registrationRepository } from "../repositories/registration.repository";
-import { teamRepository } from "../repositories/team.repository";
-import { paymentRepository } from "../repositories/payment.repository";
-import { userRepository } from "../repositories/user.repository";
 import { FEST } from "../config/fest.config";
 import { toCsv } from "../utils/format.util";
 import { HttpError } from "../utils/response.util";
@@ -19,19 +14,38 @@ export class AdminService {
       totalTeams,
       hackathonEvent,
       checkInsCount,
-      paymentsSum,
+      paymentAggregate,
       registrations,
     ] = await Promise.all([
-      eventRepository.findAll(),
-      registrationRepository.count(),
-      registrationRepository.count({ status: "CONFIRMED" }),
-      registrationRepository.count({ status: "PENDING" }),
-      teamRepository.countActive(),
-      eventRepository.findBySlug(FEST.hackathon.slug),
+      prisma.event.findMany({ orderBy: [{ sortOrder: "asc" }, { startsAt: "asc" }] }),
+      prisma.registration.count(),
+      prisma.registration.count({ where: { status: "CONFIRMED" } }),
+      prisma.registration.count({ where: { status: "PENDING" } }),
+      prisma.team.count({ where: { status: "ACTIVE" } }),
+      prisma.event.findUnique({ where: { slug: FEST.hackathon.slug } }),
       prisma.checkIn.count(),
-      paymentRepository.sumPaid(),
-      registrationRepository.findAllAdmin(search, eventFilter),
+      prisma.payment.aggregate({ where: { status: "PAID" }, _sum: { amount: true } }),
+      prisma.registration.findMany({
+        where: {
+          ...(eventFilter && eventFilter !== "ALL" ? { eventId: eventFilter } : {}),
+          ...(search
+            ? {
+                OR: [
+                  { code: { contains: search, mode: "insensitive" } },
+                  { fullName: { contains: search, mode: "insensitive" } },
+                  { email: { contains: search, mode: "insensitive" } },
+                  { phone: { contains: search, mode: "insensitive" } },
+                  { teamName: { contains: search, mode: "insensitive" } },
+                ],
+              }
+            : {}),
+        },
+        orderBy: { createdAt: "desc" },
+        include: REGISTRATION_INCLUDE,
+      }),
     ]);
+
+    const paymentsSum = paymentAggregate._sum.amount ?? 0;
 
     const hackathonRemaining = hackathonEvent
       ? Math.max((hackathonEvent.capacity ?? FEST.hackathon.maxTeams) - hackathonEvent.slotsTaken, 0)
@@ -162,11 +176,15 @@ export class AdminService {
   }
 
   async promoteUser(email: string, role: Role) {
-    const user = await userRepository.findByEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) {
       throw new HttpError(404, `User with email ${email} was not found.`, "NOT_FOUND");
     }
-    const updated = await userRepository.updateRole(email, role);
+    const updated = await prisma.user.update({
+      where: { email: normalizedEmail },
+      data: { role },
+    });
     return { id: updated.id, email: updated.email, role: updated.role };
   }
 }

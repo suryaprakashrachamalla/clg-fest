@@ -1,11 +1,14 @@
-import { prisma } from "../db/prisma.client";
-import { registrationRepository } from "../repositories/registration.repository";
+import { prisma, REGISTRATION_INCLUDE } from "../db/prisma.client";
 import { qrDataUrl, invitationUrl } from "../utils/qr.util";
 
 export class DashboardService {
   async getUserDashboard(userId: string) {
     const [registrations, memberships] = await Promise.all([
-      registrationRepository.findByUser(userId),
+      prisma.registration.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        include: REGISTRATION_INCLUDE,
+      }),
       prisma.teamMember.findMany({
         where: { userId, role: "MEMBER" },
         include: {

@@ -1,6 +1,5 @@
 import { Response, NextFunction } from "express";
 import { registrationService } from "../services/registration.service";
-import { registrationRepository } from "../repositories/registration.repository";
 import { createRegistrationSchema } from "../validators/registration.validator";
 import { sendSuccess, HttpError } from "../utils/response.util";
 import { qrDataUrl, invitationUrl } from "../utils/qr.util";
@@ -33,7 +32,7 @@ export class RegistrationController {
     try {
       const user = req.user!;
       const id = String(req.params.id);
-      const reg = await registrationRepository.findById(id);
+      const reg = await registrationService.getRegistrationById(id);
 
       if (!reg || (reg.userId !== user.id && user.role !== "ADMIN" && user.role !== "ORGANIZER")) {
         throw new HttpError(404, "Registration not found.", "NOT_FOUND");
@@ -88,7 +87,7 @@ export class RegistrationController {
     try {
       const user = req.user!;
       const id = String(req.params.id);
-      const reg = await registrationRepository.findById(id);
+      const reg = await registrationService.getRegistrationById(id);
 
       if (!reg || (reg.userId !== user.id && user.role !== "ADMIN")) {
         throw new HttpError(404, "Registration not found.", "NOT_FOUND");

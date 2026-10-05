@@ -1,7 +1,5 @@
 import { Prisma, User } from "@prisma/client";
 import { prisma } from "../db/prisma.client";
-import { teamRepository } from "../repositories/team.repository";
-import { registrationRepository } from "../repositories/registration.repository";
 import { ParticipantInput } from "../validators/auth.validator";
 import { HttpError } from "../utils/response.util";
 
@@ -16,7 +14,21 @@ const STATE_MESSAGES: Record<Exclude<InviteState, "VALID">, [number, string]> = 
 
 export class TeamService {
   async lookupInvitation(code: string) {
-    const inv = await teamRepository.findByInvitationCode(code);
+    const inv = await prisma.invitationCode.findUnique({
+      where: { code },
+      include: {
+        team: {
+          include: {
+            event: { select: { id: true, name: true, slug: true, startsAt: true, venue: true } },
+            members: {
+              orderBy: { joinedAt: "asc" },
+              select: { fullName: true, role: true, college: true },
+            },
+            leader: { select: { name: true } },
+          },
+        },
+      },
+    });
     if (!inv) return { state: "INVALID" as InviteState, team: null };
 
     const t = inv.team;
@@ -53,9 +65,11 @@ export class TeamService {
       throw new HttpError(status, msg, state);
     }
 
-    const already = await teamRepository.findUserMembership(team.event.id, user.id);
+    const already = await prisma.teamMember.findUnique({
+      where: { eventId_userId: { eventId: team.event.id, userId: user.id } },
+    });
     if (already) {
-      const teamRecord = await teamRepository.findById(already.teamId);
+      const teamRecord = await prisma.team.findUnique({ where: { id: already.teamId } });
       throw new HttpError(
         409,
         `You are already in team "${teamRecord?.name ?? "another team"}" for this event.`,
@@ -63,7 +77,9 @@ export class TeamService {
       );
     }
 
-    const activeReg = await registrationRepository.findByActiveKey(`${user.id}:${team.event.id}`);
+    const activeReg = await prisma.registration.findUnique({
+      where: { activeKey: `${user.id}:${team.event.id}` },
+    });
     if (activeReg) {
       throw new HttpError(409, "You already have your own registration for this event.", "ALREADY_REGISTERED");
     }
@@ -78,8 +94,10 @@ export class TeamService {
 
     try {
       return await prisma.$transaction(async (tx) => {
-        const claimed = await teamRepository.claimSeat(tx, team.id);
-        if (!claimed) throw new HttpError(409, STATE_MESSAGES.FULL[1], "FULL");
+        const claimed = await tx.$executeRaw`
+          UPDATE "Team" SET "memberCount" = "memberCount" + 1
+          WHERE "id" = ${team.id} AND "status" = 'ACTIVE' AND "memberCount" < "paidCapacity"`;
+        if (claimed !== 1) throw new HttpError(409, STATE_MESSAGES.FULL[1], "FULL");
 
         await tx.teamMember.create({
           data: {

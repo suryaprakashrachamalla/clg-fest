@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../db/prisma.client";
-import { eventRepository } from "../repositories/event.repository";
 import { registrationService } from "./registration.service";
 import { verifyCheckoutSignature, fetchPaymentDetails } from "../integrations/razorpay.client";
 import { HttpError } from "../utils/response.util";
@@ -112,7 +111,10 @@ export class PaymentService {
             });
             if (inTeam || nameTaken) return refund("Payment received after timeout; team could not be re-created");
           }
-          if (!(await eventRepository.reserveSlot(tx, reg.eventId))) {
+          const reserved = await tx.$executeRaw`
+            UPDATE "Event" SET "slotsTaken" = "slotsTaken" + 1, "updatedAt" = NOW()
+            WHERE "id" = ${reg.eventId} AND ("capacity" IS NULL OR "slotsTaken" < "capacity")`;
+          if (reserved !== 1) {
             return refund("Payment received after timeout and the event is now full");
           }
 

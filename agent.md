@@ -10,7 +10,7 @@
 
 **MVSR Sangamam 2026** is an enterprise-grade full-stack event registration, ticketing, team formation, payment gateway, and physical QR check-in platform. It is engineered with strict production standards:
 - **Clean Decoupled Monorepo:** Completely decoupled `frontend/` (Next.js 14 App Router) and `backend/` (Node.js + Express REST API).
-- **Layered 3-Tier Backend Architecture:** Clean separation of concerns (Routes → Controllers → Services → Repositories → Prisma ORM).
+- **Streamlined Backend Architecture:** Clean separation of concerns (Routes → Controllers → Services → Prisma ORM directly).
 - **High Concurrency & Slot Consistency:** Atomic database-level conditional updates (`UPDATE ... WHERE capacity IS NULL OR slotsTaken < capacity`) eliminating race conditions during high-volume fest registration rushes.
 - **Resilient Payment Integration:** Razorpay order generation with server-authoritative fee computation, cryptographic signature verification (HMAC-SHA256), webhook processing, and automatic mock-mode sandbox support for offline/local development.
 - **Physical QR Passes & On-Site Verification:** 256-bit cryptographically random tokens encoded into dynamic QR slips, scanned at the venue via browser camera or hand scanners, with duplicate check-in prevention.
@@ -55,7 +55,7 @@ SANGAGMAM/
     │       │   ├── payment.controller.ts
     │       │   ├── registration.controller.ts
     │       │   └── team.controller.ts
-    │       ├── services/              # Pure Domain & Business Logic layer
+    │       ├── services/              # Pure Domain & Business Logic layer (Direct Prisma ORM queries)
     │       │   ├── admin.service.ts
     │       │   ├── auth.service.ts
     │       │   ├── checkin.service.ts
@@ -64,12 +64,6 @@ SANGAGMAM/
     │       │   ├── payment.service.ts
     │       │   ├── registration.service.ts
     │       │   └── team.service.ts
-    │       ├── repositories/          # Data Access Layer (Prisma query abstraction & atomic operations)
-    │       │   ├── event.repository.ts
-    │       │   ├── payment.repository.ts
-    │       │   ├── registration.repository.ts
-    │       │   ├── team.repository.ts
-    │       │   └── user.repository.ts
     │       ├── middlewares/           # Express Guards & Interceptors
     │       │   ├── auth.middleware.ts        # JWT session verification & role guards (requireAuth, requireOrganizer, requireAdmin)
     │       │   ├── error.middleware.ts       # Global exception & Zod error transformer
@@ -93,7 +87,7 @@ SANGAGMAM/
     │       ├── integrations/          # External 3rd-party services
     │       │   └── razorpay.client.ts        # Orders API, HMAC-SHA256 signature verification, mock fallback
     │       ├── db/
-    │       │   └── prisma.client.ts          # Singleton Prisma client connection pool
+    │       │   └── prisma.client.ts          # Singleton Prisma client connection pool & shared transaction types
     │       ├── types/                 # TypeScript interfaces, SessionPayload, SafeUser, ApiResponse
     │       │   └── index.ts
     │       └── utils/                 # Utilities
@@ -154,9 +148,9 @@ SANGAGMAM/
 
 ---
 
-## 3. Layered 3-Tier Architecture Pattern
+## 3. Production Architecture Pattern
 
-In strict adherence to production-grade software engineering, business logic and database queries are never mixed with HTTP transport logic.
+In strict adherence to production-grade software engineering, business logic and database queries are never mixed with HTTP transport logic:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -186,21 +180,14 @@ In strict adherence to production-grade software engineering, business logic and
 │ 3. Services Layer (`backend/src/services/`)            │
 │    - Pure domain & business calculations               │
 │    - Enforces rules: team capacity, payment timeouts   │
-│    - Coordinates transactions across repositories      │
+│    - Direct Prisma ORM operations & transactions (tx)  │
 │    - Generates codes, handles Razorpay orders          │
-└──────────────────────────┬─────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ 4. Repositories Layer (`backend/src/repositories/`)    │
-│    - Encapsulates Prisma queries                       │
 │    - Executes atomic conditional updates (CAS)         │
-│    - Isolates raw SQL commands & database constraints  │
 └──────────────────────────┬─────────────────────────────┘
                            │
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│ 5. Database (PostgreSQL via Prisma ORM)                │
+│ 4. Database (PostgreSQL via Prisma ORM Singleton)      │
 └────────────────────────────────────────────────────────┘
 ```
 
