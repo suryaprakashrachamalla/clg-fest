@@ -1,0 +1,239 @@
+// MVSR Sangamam 2026 — relational data model
+// User → Registration → Payment
+// Team → TeamMember, Team → InvitationCode, Registration → Team / CheckIn / QR token
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PARTICIPANT
+  ORGANIZER
+  ADMIN
+}
+
+enum Category {
+  HACKATHON
+  TECHNICAL
+  CULTURAL
+  GAMING
+  WORKSHOP
+  OTHER
+}
+
+enum ParticipationType {
+  INDIVIDUAL
+  TEAM
+}
+
+enum PricingMode {
+  PER_PARTICIPANT
+  PER_TEAM
+}
+
+enum RegistrationStatus {
+  PENDING // slot held, awaiting payment
+  CONFIRMED // payment verified on server
+  EXPIRED // payment window elapsed, slot released
+  CANCELLED // cancelled by participant before payment
+  FAILED // irrecoverable (e.g. paid after expiry with no slot left → refund)
+}
+
+enum PaymentStatus {
+  CREATED
+  PAID
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUND_REQUIRED
+}
+
+enum TeamStatus {
+  PENDING
+  ACTIVE
+}
+
+enum TeamRole {
+  LEADER
+  MEMBER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String
+  college      String
+  studentId    String?
+  role         Role     @default(PARTICIPANT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  registrations   Registration[]
+  teamMemberships TeamMember[]
+  ledTeams        Team[]         @relation("TeamLeader")
+  checkInsDone    CheckIn[]      @relation("CheckedInBy")
+}
+
+model Event {
+  id                String            @id @default(cuid())
+  slug              String            @unique
+  name              String
+  category          Category
+  tagline           String
+  description       String
+  rules             String[]
+  eligibility       String
+  startsAt          DateTime
+  endsAt            DateTime
+  venue             String
+  fee               Int // in INR (whole rupees)
+  pricingMode       PricingMode       @default(PER_PARTICIPANT)
+  participationType ParticipationType @default(INDIVIDUAL)
+  minTeamSize       Int               @default(1)
+  maxTeamSize       Int               @default(1)
+  capacity          Int? // teams for TEAM events, participants for INDIVIDUAL. null = unlimited
+  slotsTaken        Int               @default(0) // confirmed + currently-held reservations
+  teamSeq           Int               @default(0) // sequence for human readable team IDs
+  teamCodePrefix    String?
+  prizes            Json              @default("[]") // [{ place, amount?, label? }]
+  coordinators      Json              @default("[]") // [{ name, phone?, email? }]
+  faqs              Json              @default("[]") // [{ q, a }]
+  accent            String            @default("violet")
+  requiresStudentId Boolean           @default(false)
+  isPublished       Boolean           @default(true)
+  registrationOpen  Boolean           @default(true)
+  sortOrder         Int               @default(100)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  registrations Registration[]
+  teams         Team[]
+  teamMembers   TeamMember[]
+
+  @@index([category])
+}
+
+model Registration {
+  id               String             @id @default(cuid())
+  code             String             @unique // REG-XXXXXX
+  userId           String
+  eventId          String
+  status           RegistrationStatus @default(PENDING)
+  // DB-enforced "one active registration per user per event": `${userId}:${eventId}` while
+  // PENDING/CONFIRMED, null otherwise (Postgres unique allows many NULLs).
+  activeKey        String?            @unique
+  participantCount Int                @default(1) // paid seats
+  amount           Int // INR, computed server-side
+  fullName         String
+  email            String
+  phone            String
+  college          String
+  studentId        String?
+  teamName         String?
+  qrToken          String?            @unique // opaque random token encoded in the QR
+  expiresAt        DateTime
+  confirmedAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  payments Payment[]
+  team     Team?
+  checkIn  CheckIn?
+
+  @@index([eventId, status])
+  @@index([userId])
+  @@index([status, expiresAt])
+}
+
+model Team {
+  id             String     @id @default(cuid())
+  code           String?    @unique // HACK-2026-0012 (assigned on payment)
+  name           String
+  eventId        String
+  leaderId       String
+  registrationId String     @unique
+  paidCapacity   Int
+  memberCount    Int        @default(1)
+  status         TeamStatus @default(PENDING)
+  createdAt      DateTime   @default(now())
+
+  event        Event           @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  leader       User            @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: Cascade)
+  registration Registration    @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  members      TeamMember[]
+  invitation   InvitationCode?
+
+  @@unique([eventId, name])
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  eventId   String
+  role      TeamRole @default(MEMBER)
+  fullName  String
+  email     String
+  phone     String
+  college   String
+  studentId String?
+  joinedAt  DateTime @default(now())
+
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
+  // A person can belong to only one team per event
+  @@unique([eventId, userId])
+  @@index([teamId])
+}
+
+model InvitationCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  teamId    String   @unique
+  isActive  Boolean  @default(true)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  registrationId    String
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  amount            Int // paise
+  currency          String        @default("INR")
+  status            PaymentStatus @default(CREATED)
+  method            String?
+  failureReason     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@index([registrationId])
+  @@index([status])
+}
+
+model CheckIn {
+  id             String   @id @default(cuid())
+  registrationId String   @unique // DB-level guard against duplicate check-ins
+  checkedInById  String
+  checkedInAt    DateTime @default(now())
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  checkedInBy  User         @relation("CheckedInBy", fields: [checkedInById], references: [id])
+}

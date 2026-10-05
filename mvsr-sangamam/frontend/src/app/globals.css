@@ -1,0 +1,247 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/orbitron/400.css";
+@import "@fontsource/orbitron/700.css";
+@import "@fontsource/orbitron/900.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-ink-950 text-zinc-100 font-sans antialiased selection:bg-brand-cyan/30 selection:text-white;
+    text-rendering: optimizeLegibility;
+    background-color: #030208;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-white tracking-tight;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-cyan ring-offset-2 ring-offset-ink-950;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Cyberpunk Glowing Typography */
+  .font-cyber {
+    font-family: "Orbitron", "Space Grotesk Variable", sans-serif;
+  }
+  .text-glow-cyan {
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.7), 0 0 24px rgba(0, 240, 255, 0.4);
+  }
+  .text-glow-violet {
+    text-shadow: 0 0 12px rgba(139, 92, 246, 0.8), 0 0 24px rgba(139, 92, 246, 0.4);
+  }
+  .text-glow-fuchsia {
+    text-shadow: 0 0 12px rgba(232, 121, 249, 0.8), 0 0 24px rgba(232, 121, 249, 0.4);
+  }
+  .text-glow-amber {
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.8), 0 0 24px rgba(251, 191, 36, 0.4);
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-cyan via-brand-fuchsia to-brand-violet bg-clip-text text-transparent;
+    background-size: 200% auto;
+  }
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-amber-300 via-orange-400 to-amber-200 bg-clip-text text-transparent;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-cyber font-bold uppercase tracking-[0.25em] text-brand-cyan;
+  }
+  .section {
+    @apply relative py-20 sm:py-32;
+  }
+  .section-title {
+    @apply mt-3 text-3xl font-display font-extrabold sm:text-5xl md:text-6xl text-white tracking-tight;
+  }
+  .section-sub {
+    @apply mt-4 max-w-2xl text-sm sm:text-base text-zinc-300/90 leading-relaxed;
+  }
+
+  /* Cyber HUD Corner Brackets & Tech Card */
+  .cyber-card {
+    @apply relative rounded-2xl bg-ink-900/80 border border-white/10 backdrop-blur-2xl transition-all duration-300;
+  }
+  .cyber-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid #B89D47;
+    border-left: 2px solid #B89D47;
+    border-top-left-radius: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  .cyber-card::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 14px;
+    height: 14px;
+    border-bottom: 2px solid #355E58;
+    border-right: 2px solid #355E58;
+    border-bottom-right-radius: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  .cyber-card:hover::before {
+    width: 24px;
+    height: 24px;
+    border-color: #CFB97E;
+    filter: drop-shadow(0 0 6px #B89D47);
+  }
+  .cyber-card:hover::after {
+    width: 24px;
+    height: 24px;
+    border-color: #FE9179;
+    filter: drop-shadow(0 0 6px #FE9179);
+  }
+
+  /* Cyber Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-cyber font-bold tracking-wider uppercase transition-all duration-300
+      disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
+  }
+  .btn-primary {
+    @apply btn text-black font-extrabold relative overflow-hidden;
+    background: linear-gradient(135deg, #B89D47 0%, #CFB97E 50%, #B89D47 100%);
+    box-shadow: 0 0 25px rgba(184, 157, 71, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 0 35px rgba(184, 157, 71, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+  }
+  .btn-cyan {
+    @apply btn text-black font-extrabold;
+    background: linear-gradient(135deg, #B89D47 0%, #CFB97E 50%, #B89D47 100%);
+    box-shadow: 0 0 25px rgba(184, 157, 71, 0.5);
+  }
+  .btn-cyan:hover:not(:disabled) {
+    background: linear-gradient(135deg, #CFB97E 0%, #FFEDD1 50%, #CFB97E 100%);
+    box-shadow: 0 0 35px rgba(184, 157, 71, 0.7);
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/[0.04] text-zinc-200 hover:border-brand-cyan/60 hover:bg-brand-cyan/10 hover:text-white;
+  }
+  .btn-subtle {
+    @apply btn bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white;
+  }
+  .btn-danger {
+    @apply btn border border-rose-500/30 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20;
+  }
+  .btn-sm {
+    @apply px-3.5 py-2 text-xs rounded-lg;
+  }
+
+  .label {
+    @apply mb-1.5 block text-[11px] font-cyber font-semibold uppercase tracking-wider text-zinc-400;
+  }
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-ink-950/80 px-4 py-3 text-[14px] text-white placeholder:text-zinc-600
+      transition focus:border-brand-cyan focus:bg-ink-950 focus:outline-none focus:ring-4 focus:ring-brand-cyan/15;
+  }
+  .input[aria-invalid="true"] {
+    @apply border-rose-500/60 focus:ring-rose-500/15;
+  }
+  .field-error {
+    @apply mt-1.5 text-xs text-rose-300;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-zinc-300;
+  }
+  .badge-ok { @apply chip border-emerald-400/30 bg-emerald-400/10 text-emerald-300; }
+  .badge-warn { @apply chip border-amber-400/30 bg-amber-400/10 text-amber-200; }
+  .badge-bad { @apply chip border-rose-400/30 bg-rose-400/10 text-rose-300; }
+  .badge-info { @apply chip border-cyan-400/30 bg-cyan-400/10 text-cyan-200; }
+
+  .table-x {
+    @apply w-full text-left text-sm;
+  }
+  .table-x th {
+    @apply whitespace-nowrap border-b border-white/10 px-4 py-3 text-[11px] font-cyber font-bold uppercase tracking-wider text-zinc-400;
+  }
+  .table-x td {
+    @apply border-b border-white/[0.05] px-4 py-3 align-top text-zinc-300;
+  }
+  .table-x tr:hover td {
+    @apply bg-white/[0.02];
+  }
+}
+
+@layer utilities {
+  /* 3D Perspective Retro-Futuristic Grid */
+  .perspective-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+  }
+  .grid-plane {
+    position: absolute;
+    bottom: -150px;
+    left: -50%;
+    width: 200%;
+    height: 500px;
+    background-image: 
+      linear-gradient(rgba(53, 94, 88, 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184, 157, 71, 0.15) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: perspective(300px) rotateX(65deg);
+    animation: grid-drift 2.5s linear infinite;
+  }
+
+  /* Scanlines Overlay */
+  .scanlines {
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%, 
+      rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.03),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.03)
+    );
+    background-size: 100% 3px, 6px 100%;
+    pointer-events: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+}
+
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  .no-print { display: none !important; }
+  .print-card { border: 1px solid #ddd !important; background: #fff !important; color: #000 !important; box-shadow: none !important; }
+  .print-card * { color: #000 !important; }
+}
