@@ -275,36 +275,36 @@ export function RegisterClient({ event, currentUser }: Props) {
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Event Details
         </Link>
 
-        <div className="p-6 rounded-3xl bg-ink-900/80 border border-white/10 backdrop-blur-xl">
+        <div className="p-6 rounded-3xl bg-[#0B0D14] border border-white/10 backdrop-blur-xl">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="text-xs uppercase tracking-widest text-brand-cyan font-bold mb-1">
-                {event.category} REGISTRATION
+              <div className="text-[10px] uppercase tracking-wider text-[#D4AF37] font-semibold mb-1">
+                {event.category} Registration
               </div>
               <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-white">
                 {event.name}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 mt-2">
                 <span className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+                  <Calendar className="w-3.5 h-3.5 text-[#D4AF37]" />
                   {fmtDate(event.startsAt)}, {fmtTime(event.startsAt)}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-zinc-500" />
+                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
                   {event.venue}
                 </span>
               </div>
             </div>
 
             <div className="text-left sm:text-right">
-              <div className="text-xs text-zinc-400 font-medium uppercase">
-                {isHackathon ? "Fee per person" : "Registration Fee"}
+              <div className="text-xs text-zinc-400 font-medium">
+                {isHackathon ? "Fee per participant" : "Registration Fee"}
               </div>
-              <div className="text-2xl font-display font-extrabold text-brand-cyan">
+              <div className="text-2xl font-display font-extrabold text-white">
                 {formatINR(event.fee)}
               </div>
               {isHackathon && (
-                <div className="text-[11px] text-zinc-500">₹200 × team size</div>
+                <div className="text-[11px] text-zinc-400">₹200 × team size</div>
               )}
             </div>
           </div>
@@ -317,32 +317,32 @@ export function RegisterClient({ event, currentUser }: Props) {
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
               currentStep === 1
-                ? "bg-brand-violet text-white ring-4 ring-brand-violet/20"
+                ? "bg-[#D4AF37] text-black ring-4 ring-[#D4AF37]/20"
                 : "bg-emerald-500 text-white"
             }`}
           >
             {currentStep > 1 ? <CheckCircle className="w-4 h-4" /> : "1"}
           </div>
           <div>
-            <div className="text-xs font-bold text-white uppercase">Step 1</div>
-            <div className="text-xs text-zinc-400">Participant & Team Details</div>
+            <div className="text-xs font-bold text-white uppercase tracking-wider">Step 1</div>
+            <div className="text-xs text-zinc-400">Participant & Team</div>
           </div>
         </div>
 
-        <div className="h-0.5 flex-1 mx-4 bg-white/10" />
+        <div className="h-px flex-1 mx-4 bg-white/10" />
 
         <div className="flex items-center gap-3">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
               currentStep === 2
-                ? "bg-brand-violet text-white ring-4 ring-brand-violet/20"
-                : "bg-ink-900 border border-white/20 text-zinc-500"
+                ? "bg-[#D4AF37] text-black ring-4 ring-[#D4AF37]/20"
+                : "bg-[#0B0D14] border border-white/20 text-zinc-500"
             }`}
           >
             2
           </div>
           <div>
-            <div className="text-xs font-bold text-white uppercase">Step 2</div>
+            <div className="text-xs font-bold text-white uppercase tracking-wider">Step 2</div>
             <div className="text-xs text-zinc-400">Review & Payment</div>
           </div>
         </div>
@@ -357,13 +357,13 @@ export function RegisterClient({ event, currentUser }: Props) {
       )}
 
       {/* Form Card */}
-      <div className="rounded-3xl bg-ink-900/90 border border-white/15 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl">
+      <div className="rounded-3xl bg-[#0B0D14] border border-white/10 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl">
         {currentStep === 1 ? (
           <form onSubmit={handleNext} className="space-y-6">
             {/* Team details if Team Event */}
             {isTeam && (
-              <div className="space-y-5 p-5 rounded-2xl bg-ink-950/60 border border-white/10">
-                <div className="flex items-center gap-2 text-brand-cyan text-xs font-bold uppercase tracking-wider">
+              <div className="space-y-5 p-5 rounded-2xl bg-[#0F121C] border border-[#D4AF37]/20">
+                <div className="flex items-center gap-2 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
                   <Users className="w-4 h-4" /> Team Information
                 </div>
 
@@ -373,7 +373,7 @@ export function RegisterClient({ event, currentUser }: Props) {
                     type="text"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    placeholder="e.g. CyberKnights, CodeBreakers"
+                    placeholder="e.g. CodeBreakers, TuringSquad"
                     className="input"
                     required
                   />
@@ -395,14 +395,14 @@ export function RegisterClient({ event, currentUser }: Props) {
                           onClick={() => setTeamSize(size)}
                           className={`p-3.5 rounded-xl border text-center transition flex flex-col items-center justify-center ${
                             teamSize === size
-                              ? "bg-brand-violet/20 border-brand-violet text-white shadow-lg shadow-brand-violet/20"
-                              : "bg-ink-900 border-white/10 text-zinc-400 hover:text-white"
+                              ? "bg-[#D4AF37]/15 border-[#D4AF37] text-white shadow-lg shadow-[#D4AF37]/15"
+                              : "bg-[#0B0D14] border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
                           }`}
                         >
-                          <span className="font-display font-extrabold text-base">
+                          <span className="font-display font-bold text-base">
                             {size} {size === 1 ? "Person" : "Members"}
                           </span>
-                          <span className="text-xs text-brand-cyan font-semibold mt-0.5">
+                          <span className="text-xs text-[#D4AF37] font-semibold mt-0.5">
                             ₹{size * 200}
                           </span>
                         </button>
@@ -410,8 +410,7 @@ export function RegisterClient({ event, currentUser }: Props) {
                     </div>
 
                     <div className="mt-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-zinc-400 leading-relaxed">
-                      💡 <strong>Hackathon Rule:</strong> Only you (Team Leader) pay initially.
-                      After payment, you will receive an <strong>Invitation Code</strong> to invite teammates free of charge!
+                      💡 <strong>Team Pass Note:</strong> The team leader reserves and pays for the slots once. Teammates join 100% free using your invitation code.
                     </div>
                   </div>
                 )}
@@ -508,7 +507,7 @@ export function RegisterClient({ event, currentUser }: Props) {
             </h3>
 
             {/* Summary Box */}
-            <div className="p-5 rounded-2xl bg-ink-950/70 border border-white/10 space-y-4 text-sm">
+            <div className="p-5 rounded-2xl bg-[#0F121C] border border-[#D4AF37]/20 space-y-4 text-sm">
               <div className="flex justify-between border-b border-white/5 pb-3">
                 <span className="text-zinc-400">Event</span>
                 <span className="font-bold text-white">{event.name}</span>
@@ -518,7 +517,7 @@ export function RegisterClient({ event, currentUser }: Props) {
                 <>
                   <div className="flex justify-between border-b border-white/5 pb-3">
                     <span className="text-zinc-400">Team Name</span>
-                    <span className="font-bold text-brand-cyan">{teamName}</span>
+                    <span className="font-bold text-[#D4AF37]">{teamName}</span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-3">
                     <span className="text-zinc-400">Team Size</span>
@@ -534,12 +533,12 @@ export function RegisterClient({ event, currentUser }: Props) {
 
               <div className="flex justify-between border-b border-white/5 pb-3">
                 <span className="text-zinc-400">College</span>
-                <span className="font-semibold text-zinc-300">{college}</span>
+                <span className="font-medium text-zinc-300">{college}</span>
               </div>
 
               <div className="flex justify-between border-b border-white/5 pb-3">
                 <span className="text-zinc-400">Contact</span>
-                <span className="font-semibold text-zinc-300">{currentUser.email} · {phone}</span>
+                <span className="font-medium text-zinc-300">{currentUser.email} · {phone}</span>
               </div>
 
               {/* Amount Breakdown */}
@@ -549,12 +548,12 @@ export function RegisterClient({ event, currentUser }: Props) {
                     Total Payable Amount
                   </div>
                   {isHackathon && (
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-zinc-400">
                       {teamSize} participants × ₹200 each
                     </div>
                   )}
                 </div>
-                <div className="font-display text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-cyan">
+                <div className="font-display text-2xl font-extrabold text-[#D4AF37]">
                   {formatINR(totalAmount)}
                 </div>
               </div>
@@ -564,7 +563,7 @@ export function RegisterClient({ event, currentUser }: Props) {
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-3">
               <ShieldCheck className="w-5 h-5 shrink-0 text-emerald-400" />
               <span>
-                Payments are securely processed via Razorpay. Your slots will be confirmed automatically upon signature verification.
+                Payments are securely processed via Razorpay. Your pass and QR slip are confirmed immediately upon signature verification.
               </span>
             </div>
 
@@ -583,7 +582,7 @@ export function RegisterClient({ event, currentUser }: Props) {
                 type="button"
                 onClick={handlePayment}
                 disabled={submitting}
-                className="btn-primary px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 shadow-xl shadow-brand-violet/30"
+                className="btn-primary px-8 py-3.5 rounded-xl font-bold flex items-center gap-2 shadow-xl shadow-[#D4AF37]/20"
               >
                 {submitting ? (
                   <>
@@ -605,14 +604,14 @@ export function RegisterClient({ event, currentUser }: Props) {
       {/* Razorpay Sandbox Test Simulator Modal */}
       {sandboxModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md rounded-3xl bg-ink-900 border border-brand-violet/30 p-6 sm:p-8 space-y-6 shadow-2xl text-center">
-            <div className="w-12 h-12 rounded-2xl bg-brand-violet/10 border border-brand-violet/20 text-brand-violet mx-auto flex items-center justify-center">
+          <div className="w-full max-w-md rounded-3xl bg-[#0B0D14] border border-[#D4AF37]/30 p-6 sm:p-8 space-y-6 shadow-2xl text-center">
+            <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] mx-auto flex items-center justify-center">
               <CreditCard className="w-6 h-6" />
             </div>
 
             <div>
-              <div className="text-[10px] uppercase font-bold tracking-widest text-brand-cyan mb-1">
-                RAZORPAY TEST ENVIRONMENT
+              <div className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37] mb-1">
+                Razorpay Test Environment
               </div>
               <h3 className="font-display text-xl font-bold text-white">
                 Simulated Payment Gateway
@@ -622,14 +621,14 @@ export function RegisterClient({ event, currentUser }: Props) {
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-ink-950/70 border border-white/5 space-y-2 text-xs text-left">
+            <div className="p-4 rounded-2xl bg-[#0F121C] border border-white/5 space-y-2 text-xs text-left">
               <div className="flex justify-between">
                 <span className="text-zinc-400">Payable Amount:</span>
                 <span className="font-bold text-white text-sm">{formatINR(totalAmount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-zinc-400">Payment Modes:</span>
-                <span className="text-zinc-300">UPI / Cards / NetBanking</span>
+                <span className="text-zinc-300">UPI / Cards / NetBanking / Wallets</span>
               </div>
             </div>
 
@@ -638,13 +637,13 @@ export function RegisterClient({ event, currentUser }: Props) {
                 type="button"
                 onClick={simulateSuccess}
                 disabled={submitting}
-                className="btn-primary w-full py-3.5 rounded-xl font-extrabold text-xs shadow-xl shadow-brand-violet/25 flex items-center justify-center gap-2"
+                className="btn-primary w-full py-3.5 rounded-xl font-bold text-xs shadow-xl shadow-[#D4AF37]/20 flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
-                    <CheckCircle className="w-4 h-4 text-emerald-300" />
+                    <CheckCircle className="w-4 h-4 text-emerald-400" />
                     Simulate Successful Payment (₹{totalAmount})
                   </>
                 )}

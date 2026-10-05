@@ -1,8 +1,5 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/space-grotesk";
-@import "@fontsource/orbitron/400.css";
-@import "@fontsource/orbitron/700.css";
-@import "@fontsource/orbitron/900.css";
 
 @tailwind base;
 @tailwind components;
@@ -18,15 +15,20 @@
     scroll-padding-top: 5rem;
   }
   body {
-    @apply bg-ink-950 text-zinc-100 font-sans antialiased selection:bg-brand-cyan/30 selection:text-white;
+    @apply bg-[#08090E] text-zinc-100 font-sans antialiased selection:bg-[#D4AF37]/30 selection:text-white;
     text-rendering: optimizeLegibility;
-    background-color: #030208;
+    background-color: #08090E;
+    background-image: 
+      radial-gradient(at 15% 15%, rgba(212, 175, 55, 0.04) 0px, transparent 50%),
+      radial-gradient(at 85% 25%, rgba(99, 102, 241, 0.04) 0px, transparent 50%),
+      radial-gradient(at 50% 85%, rgba(20, 184, 166, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
   }
   h1, h2, h3, h4 {
     @apply font-display text-white tracking-tight;
   }
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-cyan ring-offset-2 ring-offset-ink-950;
+    @apply outline-none ring-2 ring-[#D4AF37] ring-offset-2 ring-offset-[#08090E];
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -43,119 +45,77 @@
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
   
-  /* Cyberpunk Glowing Typography */
+  /* Refined, Editorial Typography */
   .font-cyber {
-    font-family: "Orbitron", "Space Grotesk Variable", sans-serif;
+    font-family: "Space Grotesk Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: 0.02em;
   }
   .text-glow-cyan {
-    text-shadow: 0 0 12px rgba(0, 240, 255, 0.7), 0 0 24px rgba(0, 240, 255, 0.4);
+    text-shadow: 0 0 16px rgba(45, 212, 191, 0.25);
   }
   .text-glow-violet {
-    text-shadow: 0 0 12px rgba(139, 92, 246, 0.8), 0 0 24px rgba(139, 92, 246, 0.4);
+    text-shadow: 0 0 16px rgba(167, 139, 250, 0.25);
   }
   .text-glow-fuchsia {
-    text-shadow: 0 0 12px rgba(232, 121, 249, 0.8), 0 0 24px rgba(232, 121, 249, 0.4);
+    text-shadow: 0 0 16px rgba(244, 114, 182, 0.25);
   }
   .text-glow-amber {
-    text-shadow: 0 0 12px rgba(251, 191, 36, 0.8), 0 0 24px rgba(251, 191, 36, 0.4);
+    text-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-brand-cyan via-brand-fuchsia to-brand-violet bg-clip-text text-transparent;
-    background-size: 200% auto;
+    @apply bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent;
   }
   .text-gradient-gold {
-    @apply bg-gradient-to-r from-amber-300 via-orange-400 to-amber-200 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#F7E7C4] via-[#D4AF37] to-[#AA8222] bg-clip-text text-transparent;
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-cyber font-bold uppercase tracking-[0.25em] text-brand-cyan;
+    @apply inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-cyber font-semibold uppercase tracking-[0.2em] text-[#D4AF37];
   }
   .section {
-    @apply relative py-20 sm:py-32;
+    @apply relative py-16 sm:py-24;
   }
   .section-title {
-    @apply mt-3 text-3xl font-display font-extrabold sm:text-5xl md:text-6xl text-white tracking-tight;
+    @apply mt-3 text-3xl font-display font-extrabold sm:text-4xl md:text-5xl text-white tracking-tight;
   }
   .section-sub {
-    @apply mt-4 max-w-2xl text-sm sm:text-base text-zinc-300/90 leading-relaxed;
+    @apply mt-3 max-w-2xl text-sm sm:text-base text-zinc-400 leading-relaxed font-normal;
   }
 
-  /* Cyber HUD Corner Brackets & Tech Card */
+  /* Soft Luxury Frosted Glass Cards (Eye-friendly, no harsh neon corners) */
   .cyber-card {
-    @apply relative rounded-2xl bg-ink-900/80 border border-white/10 backdrop-blur-2xl transition-all duration-300;
+    @apply relative rounded-2xl bg-[#0F1320]/70 border border-white/[0.08] backdrop-blur-xl transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.3)];
   }
-  .cyber-card::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 14px;
-    height: 14px;
-    border-top: 2px solid #B89D47;
-    border-left: 2px solid #B89D47;
-    border-top-left-radius: 1rem;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-  .cyber-card::after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    width: 14px;
-    height: 14px;
-    border-bottom: 2px solid #355E58;
-    border-right: 2px solid #355E58;
-    border-bottom-right-radius: 1rem;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-  .cyber-card:hover::before {
-    width: 24px;
-    height: 24px;
-    border-color: #CFB97E;
-    filter: drop-shadow(0 0 6px #B89D47);
-  }
-  .cyber-card:hover::after {
-    width: 24px;
-    height: 24px;
-    border-color: #FE9179;
-    filter: drop-shadow(0 0 6px #FE9179);
+  .cyber-card:hover {
+    @apply border-[#D4AF37]/30 bg-[#121828]/80 shadow-[0_8px_32px_rgba(0,0,0,0.45)] -translate-y-0.5;
   }
 
-  /* Cyber Buttons */
+  /* Elegant Modern Buttons */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-cyber font-bold tracking-wider uppercase transition-all duration-300
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200
       disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98];
   }
   .btn-primary {
-    @apply btn text-black font-extrabold relative overflow-hidden;
-    background: linear-gradient(135deg, #B89D47 0%, #CFB97E 50%, #B89D47 100%);
-    box-shadow: 0 0 25px rgba(184, 157, 71, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    @apply btn text-black font-bold relative overflow-hidden;
+    background: linear-gradient(135deg, #F5E6BE 0%, #D4AF37 50%, #B89228 100%);
+    box-shadow: 0 2px 14px rgba(212, 175, 55, 0.25);
   }
   .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 0 35px rgba(184, 157, 71, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+    filter: brightness(1.05);
   }
   .btn-cyan {
-    @apply btn text-black font-extrabold;
-    background: linear-gradient(135deg, #B89D47 0%, #CFB97E 50%, #B89D47 100%);
-    box-shadow: 0 0 25px rgba(184, 157, 71, 0.5);
-  }
-  .btn-cyan:hover:not(:disabled) {
-    background: linear-gradient(135deg, #CFB97E 0%, #FFEDD1 50%, #CFB97E 100%);
-    box-shadow: 0 0 35px rgba(184, 157, 71, 0.7);
-    transform: translateY(-1px);
+    @apply btn-primary;
   }
   .btn-ghost {
-    @apply btn border border-white/15 bg-white/[0.04] text-zinc-200 hover:border-brand-cyan/60 hover:bg-brand-cyan/10 hover:text-white;
+    @apply btn border border-white/10 bg-white/[0.03] text-zinc-300 hover:border-white/20 hover:bg-white/[0.06] hover:text-white backdrop-blur-md;
   }
   .btn-subtle {
-    @apply btn bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white;
+    @apply btn bg-white/[0.05] text-zinc-300 hover:bg-white/[0.08] hover:text-white;
   }
   .btn-danger {
-    @apply btn border border-rose-500/30 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20;
+    @apply btn border border-rose-500/20 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20;
   }
   .btn-sm {
     @apply px-3.5 py-2 text-xs rounded-lg;

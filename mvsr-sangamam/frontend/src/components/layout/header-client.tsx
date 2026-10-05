@@ -8,13 +8,13 @@ import { LayoutDashboard, LogOut, Menu, ShieldCheck, X, Volume2, VolumeX, Sparkl
 import { cx } from "@/lib/format";
 
 const NAV = [
-  { href: "/", label: "HOME" },
-  { href: "/#events", label: "EVENTS" },
-  { href: "/events/hackathon", label: "HACKATHON" },
-  { href: "/#schedule", label: "SCHEDULE" },
-  { href: "/#about", label: "ABOUT" },
-  { href: "/#faqs", label: "FAQS" },
-  { href: "/#contact", label: "CONTACT" },
+  { href: "/", label: "Home" },
+  { href: "/#events", label: "Events" },
+  { href: "/events/hackathon", label: "Hackathon" },
+  { href: "/#schedule", label: "Schedule" },
+  { href: "/#about", label: "About" },
+  { href: "/#faqs", label: "FAQs" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export function HeaderClient({ user }: { user: { name: string; role: string } | null }) {
@@ -110,12 +110,12 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-1.5 lg:flex font-cyber" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className="rounded-lg px-3 py-1.5 text-[11px] font-bold tracking-wider text-zinc-300 transition hover:bg-white/[0.06] hover:text-[#CFB97E]"
+              className="rounded-lg px-3.5 py-1.5 text-xs font-medium text-zinc-300 transition hover:bg-white/[0.06] hover:text-[#D4AF37]"
             >
               {n.label}
             </Link>
@@ -123,59 +123,39 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
         </nav>
 
         {/* Right Action Icons & Auth */}
-        <div className="hidden items-center gap-2.5 lg:flex font-cyber">
-          {/* Ambient Sound FX Toggle */}
-          <button
-            onClick={toggleSound}
-            title={soundOn ? "Mute ambient audio" : "Play ambient synth"}
-            className={`p-2 rounded-xl border transition ${
-              soundOn
-                ? "bg-[#053229]/80 border-[#CFB97E]/60 text-[#CFB97E] shadow-[0_0_15px_rgba(184,157,71,0.25)]"
-                : "bg-white/[0.04] border-white/10 text-zinc-400 hover:text-white"
-            }`}
-          >
-            {soundOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-          </button>
-
+        <div className="hidden items-center gap-3 lg:flex">
           {user ? (
             <>
               {isStaff && (
-                <Link href="/admin" className="btn-subtle btn-sm text-[11px]">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#B89D47]" /> ADMIN
+                <Link href="/admin" className="btn-subtle text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#D4AF37]" /> Admin
                 </Link>
               )}
-              <Link href="/dashboard" className="btn-ghost btn-sm text-[11px]">
-                <LayoutDashboard className="h-3.5 w-3.5" /> DASHBOARD
+              <Link href="/dashboard" className="btn-ghost text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5">
+                <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
               </Link>
-              <button onClick={logout} className="btn-subtle btn-sm" aria-label="Sign out">
+              <button onClick={logout} className="btn-subtle p-2 rounded-lg text-zinc-400 hover:text-white" aria-label="Sign out">
                 <LogOut className="h-3.5 w-3.5" />
               </button>
             </>
           ) : (
-            <Link href="/login" className="btn-ghost btn-sm text-[11px]">
-              SIGN IN
+            <Link href="/login" className="btn-ghost text-xs px-3.5 py-2 rounded-lg font-medium text-zinc-300 hover:text-white">
+              Sign In
             </Link>
           )}
 
           <Link
             href="/#events"
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black font-cyber font-black text-[11px] tracking-wider hover:brightness-110 shadow-[0_0_20px_rgba(184,157,71,0.35)] transition"
+            className="btn-primary text-xs px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 shadow-md shadow-[#D4AF37]/15"
           >
-            REGISTER NOW
+            Register Pass
           </Link>
         </div>
 
         {/* Mobile Hamburger */}
         <div className="flex items-center gap-2 lg:hidden">
           <button
-            onClick={toggleSound}
-            className="p-2 rounded-xl bg-white/[0.04] border border-white/10 text-zinc-400"
-          >
-            {soundOn ? <Volume2 className="h-4 w-4 text-[#CFB97E]" /> : <VolumeX className="h-4 w-4" />}
-          </button>
-
-          <button
-            className="btn-subtle btn-sm"
+            className="btn-subtle p-2 rounded-lg"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-label="Toggle menu"
@@ -187,46 +167,46 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-[#355E58]/30 bg-[#070B10]/98 backdrop-blur-2xl lg:hidden font-cyber">
+        <div className="h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-[#08090E]/98 backdrop-blur-2xl lg:hidden">
           <nav className="container-x flex flex-col py-6" aria-label="Mobile">
             {NAV.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-white/[0.06] py-4 text-base font-bold tracking-wider text-zinc-200 hover:text-[#CFB97E]"
+                className="border-b border-white/[0.06] py-3.5 text-sm font-medium text-zinc-200 hover:text-[#D4AF37]"
               >
                 {n.label}
               </Link>
             ))}
-            <div className="mt-8 grid gap-3">
+            <div className="mt-6 grid gap-2.5">
               <Link
                 href="/#events"
                 onClick={() => setOpen(false)}
-                className="py-3 text-center rounded-xl bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black font-cyber font-black text-sm tracking-wider"
+                className="btn-primary py-3 text-center rounded-xl font-bold text-sm"
               >
-                REGISTER NOW
+                Register Pass
               </Link>
-              <Link href="/join" onClick={() => setOpen(false)} className="btn-ghost">
-                JOIN WITH TEAM CODE
+              <Link href="/join" onClick={() => setOpen(false)} className="btn-ghost text-center text-sm py-2.5">
+                Join with Team Code
               </Link>
               {user ? (
                 <>
-                  <Link href="/dashboard" className="btn-ghost">
-                    <LayoutDashboard className="h-4 w-4" /> DASHBOARD
+                  <Link href="/dashboard" onClick={() => setOpen(false)} className="btn-ghost flex items-center justify-center gap-2 text-sm py-2.5">
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
                   </Link>
                   {isStaff && (
-                    <Link href="/admin" className="btn-ghost">
-                      <ShieldCheck className="h-4 w-4" /> ADMIN CONSOLE
+                    <Link href="/admin" onClick={() => setOpen(false)} className="btn-ghost flex items-center justify-center gap-2 text-sm py-2.5">
+                      <ShieldCheck className="h-4 w-4" /> Admin Console
                     </Link>
                   )}
-                  <button onClick={logout} className="btn-subtle">
-                    SIGN OUT
+                  <button onClick={logout} className="btn-subtle py-2.5 text-sm">
+                    Sign Out
                   </button>
                 </>
               ) : (
-                <Link href="/login" className="btn-ghost">
-                  SIGN IN
+                <Link href="/login" onClick={() => setOpen(false)} className="btn-ghost text-center text-sm py-2.5">
+                  Sign In
                 </Link>
               )}
             </div>

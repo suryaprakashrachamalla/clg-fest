@@ -11,7 +11,6 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onOpenModal }: EventCardProps) {
-  const accent = accentOf(event.accent);
   const isHackathon = event.slug === "hackathon" || event.category === "HACKATHON";
   const isTeam = event.participationType === "TEAM";
 
@@ -21,95 +20,90 @@ export function EventCard({ event, onOpenModal }: EventCardProps) {
   const isAlmostFull = hasCapacity && event.remaining !== null && event.remaining <= 10 && event.remaining > 0;
 
   return (
-    <div className="cyber-card group flex flex-col justify-between p-6 sm:p-7 hover:-translate-y-1.5 transition-all duration-300 hover:shadow-neon-cyan/20">
-      {/* Background ambient corner glow */}
-      <div
-        className={`absolute -top-16 -right-16 w-36 h-36 rounded-full ${accent.glow} blur-3xl opacity-20 group-hover:opacity-70 transition duration-500 pointer-events-none`}
-      />
-
+    <div className="cyber-card group flex flex-col justify-between p-6 sm:p-7 transition-all duration-300">
       <div>
         {/* Top telemetry strip: Category + Team mode */}
         <div className="flex items-center justify-between gap-2 mb-4">
-          <span className="font-cyber inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/5 border border-white/10 text-brand-cyan group-hover:border-brand-cyan/40 transition">
-            {isHackathon && <Sparkles className="w-3 h-3 text-brand-cyan animate-pulse" />}
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-white/[0.04] border border-white/[0.08] text-[#D4AF37] group-hover:border-[#D4AF37]/30 transition">
+            {isHackathon && <Sparkles className="w-3 h-3 text-[#D4AF37]" />}
             {event.category}
           </span>
 
-          <span className="font-cyber inline-flex items-center gap-1.5 text-[10px] font-semibold text-zinc-300 bg-ink-950/80 px-2.5 py-1 rounded-lg border border-white/10">
-            {isTeam ? <Users className="w-3 h-3 text-brand-cyan" /> : <User className="w-3 h-3 text-brand-amber" />}
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-zinc-300 bg-white/[0.02] px-2.5 py-1 rounded-lg border border-white/[0.06]">
+            {isTeam ? <Users className="w-3 h-3 text-[#D4AF37]" /> : <User className="w-3 h-3 text-amber-400" />}
             {teamSizeLabel(event)}
           </span>
         </div>
 
         {/* Title & Tagline */}
-        <h3 className="font-display text-xl sm:text-2xl font-black text-white group-hover:text-brand-cyan transition duration-200">
+        <h3 className="font-display text-xl sm:text-2xl font-bold text-white group-hover:text-[#F4E3BA] transition duration-200">
           {event.name}
         </h3>
-        <p className="mt-2 text-xs sm:text-sm text-zinc-300/80 line-clamp-2 leading-relaxed">
+        <p className="mt-2 text-xs sm:text-sm text-zinc-400 line-clamp-2 leading-relaxed">
           {event.tagline || event.description}
         </p>
 
         {/* Dynamic Capacity Tracker */}
         {hasCapacity && (
-          <div className="mt-4 p-3 rounded-xl bg-ink-950/80 border border-white/10 text-xs font-cyber">
+          <div className="mt-4 p-3 rounded-xl bg-black/20 border border-white/[0.06] text-xs">
             <div className="flex items-center justify-between text-zinc-400 mb-1.5 text-[11px]">
-              <span className="tracking-wider">{isTeam ? "SLOTS OCCUPIED" : "SEATS TAKEN"}</span>
+              <span className="font-medium text-zinc-400">{isTeam ? "Team Slots Filled" : "Seats Filled"}</span>
               <span className="font-bold text-white">
-                {event.confirmed} / {event.capacity} {isTeam ? "TEAMS" : "SLOTS"}
+                {event.confirmed} / {event.capacity} {isTeam ? "Teams" : "Seats"}
               </span>
             </div>
 
-            {/* Glowing progress line */}
-            <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden border border-white/5">
+            {/* Progress line */}
+            <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   isFull
                     ? "bg-rose-500"
                     : isAlmostFull
                     ? "bg-amber-400"
-                    : "bg-gradient-to-r from-brand-cyan via-brand-violet to-brand-fuchsia"
+                    : "bg-gradient-to-r from-[#D4AF37] to-[#F4E3BA]"
                 }`}
                 style={{ width: `${Math.min(100, ((event.confirmed || 0) / event.capacity!) * 100)}%` }}
               />
             </div>
 
             {isFull ? (
-              <p className="mt-2 text-[10px] font-bold text-rose-400 flex items-center gap-1 uppercase tracking-wider">
-                <ShieldAlert className="w-3 h-3" /> [ CAPACITY MAXIMUM REACHED ]
+              <p className="mt-2 text-[10px] font-medium text-rose-400 flex items-center gap-1">
+                <ShieldAlert className="w-3 h-3" /> Registration Closed (Full)
               </p>
             ) : isAlmostFull ? (
-              <p className="mt-2 text-[10px] font-bold text-amber-300 flex items-center gap-1 uppercase tracking-wider">
+              <p className="mt-2 text-[10px] font-medium text-amber-300 flex items-center gap-1">
                 <Zap className="w-3 h-3 text-amber-400 animate-pulse" />
-                ⚡ ONLY {event.remaining} {isTeam ? "TEAM SLOTS" : "SLOTS"} LEFT!
+                Only {event.remaining} {isTeam ? "teams" : "seats"} left
               </p>
             ) : (
-              <p className="mt-2 text-[10px] text-zinc-400 tracking-wider">
-                {event.remaining} {isTeam ? "TEAM SLOTS" : "SLOTS"} AVAILABLE
+              <p className="mt-2 text-[10px] text-zinc-500">
+                {event.remaining} {isTeam ? "team slots" : "seats"} available
               </p>
             )}
           </div>
         )}
 
         {/* Date, Time, Venue */}
-        <div className="mt-4 space-y-1.5 text-xs text-zinc-400 border-t border-white/5 pt-4">
+        <div className="mt-4 space-y-1.5 text-xs text-zinc-400 border-t border-white/[0.06] pt-3.5">
           <div className="flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5 text-brand-cyan shrink-0" />
+            <Calendar className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
             <span suppressHydrationWarning>{fmtDate(event.startsAt)}, {fmtTime(event.startsAt)}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5 text-brand-fuchsia shrink-0" />
+            <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
             <span className="truncate">{event.venue}</span>
           </div>
         </div>
       </div>
 
-      {/* Footer: Fee & Cyber Action Buttons */}
-      <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+      {/* Footer: Fee & Action Buttons */}
+      <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3">
         <div>
-          <span className="block text-[9px] font-cyber uppercase tracking-widest text-zinc-500 font-bold">
-            ENTRY FEE
+          <span className="block text-[10px] text-zinc-500 font-medium">
+            Entry Fee
           </span>
-          <span className="font-cyber text-base sm:text-lg font-black text-white text-glow-cyan">
+          <span className="text-base sm:text-lg font-bold text-white">
             {feeLabel(event)}
           </span>
         </div>
@@ -118,29 +112,29 @@ export function EventCard({ event, onOpenModal }: EventCardProps) {
           {onOpenModal ? (
             <button
               onClick={() => onOpenModal(event)}
-              className="px-3 py-2 text-[11px] font-cyber font-bold rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 transition uppercase"
+              className="px-3 py-2 text-xs font-medium rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition"
             >
-              DETAILS
+              Details
             </button>
           ) : (
             <Link
               href={`/events/${event.slug}`}
-              className="px-3 py-2 text-[11px] font-cyber font-bold rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 transition uppercase"
+              className="px-3 py-2 text-xs font-medium rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition"
             >
-              DETAILS
+              Details
             </Link>
           )}
 
           {isFull ? (
-            <span className="px-3.5 py-2 text-[11px] font-cyber font-bold rounded-lg bg-zinc-800 text-zinc-500 cursor-not-allowed uppercase">
-              CLOSED
+            <span className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-zinc-800 text-zinc-500 cursor-not-allowed">
+              Closed
             </span>
           ) : (
             <Link
               href={`/register/${event.slug}`}
-              className="btn-cyan text-[11px] px-3.5 py-2 rounded-lg font-cyber font-black flex items-center gap-1.5"
+              className="btn-primary text-xs px-3.5 py-2 rounded-lg font-bold flex items-center gap-1.5"
             >
-              REGISTER
+              Register
               <ArrowRight className="w-3 h-3" />
             </Link>
           )}

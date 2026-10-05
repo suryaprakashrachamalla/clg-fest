@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import CSEIntroSequence from "./CSEIntroSequence";
 import DigitalBackground from "./DigitalBackground";
+import FuturisticHero from "./FuturisticHero";
 import EventCategoriesSection from "./EventCategoriesSection";
 import TechRailNav from "./TechRailNav";
 import RegistrationModal from "./RegistrationModal";
@@ -46,14 +47,14 @@ export default function SangamamExperience() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#05070D] text-white selection:bg-[#B89D47] selection:text-black">
+    <div className="relative min-h-screen bg-[#08090E] text-white selection:bg-[#D4AF37]/30 selection:text-white">
       {/* 1. Cinematic Photo Intro Sequence */}
       {introActive && <CSEIntroSequence onComplete={handleIntroComplete} />}
 
       {/* 2. Evolving Digital Environmental Background */}
       <DigitalBackground />
 
-      {/* 3. HUD Side Navigation Rail */}
+      {/* 3. Side Navigation Rail */}
       <TechRailNav />
 
       {/* 4. Main Page Content Container */}
@@ -62,8 +63,18 @@ export default function SangamamExperience() {
           introActive ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
+        {/* Hero Section */}
+        <FuturisticHero
+          onExploreEvents={() => {
+            const el = document.getElementById("events");
+            el?.scrollIntoView({ behavior: "smooth" });
+          }}
+          onOpenRegister={() => handleOpenRegister("hackathon")}
+          onReplayIntro={() => setIntroActive(true)}
+        />
+
         {/* Main Flagship Event Categories (Technical, Semitechnical, Cultural) */}
-        <div id="events" className="pt-24 sm:pt-28">
+        <div id="events" className="pt-12 sm:pt-16">
           <EventCategoriesSection
             onViewDetails={handleViewDetails}
             onRegister={(e) => {

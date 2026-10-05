@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { soundFx } from "@/utils/audio";
-import { ArrowRight, Terminal, Sparkles, Shield, Cpu, Activity, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Sparkles, Calendar, MapPin, Volume2, VolumeX, RotateCcw, Trophy, Users, Layers } from "lucide-react";
 
 interface FuturisticHeroProps {
   onExploreEvents: () => void;
@@ -40,55 +40,35 @@ export default function FuturisticHero({
   };
 
   return (
-    <section id="hero" className="relative min-h-[92vh] flex flex-col justify-between pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Top System Status Bar */}
-      <div className="w-full flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl border border-white/10 bg-[#0A0F1C]/80 backdrop-blur-xl mb-12 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-mono">
-          {/* Status 1: System */}
-          <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-[11px]">SYSTEM STATUS:</span>
-            <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              ONLINE
-            </span>
-          </div>
-
-          <span className="text-zinc-700 hidden sm:inline">|</span>
-
-          {/* Status 2: Registration */}
-          <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-[11px]">EVENT REGISTRATION:</span>
-            <span className="flex items-center gap-1.5 text-[#CFB97E] font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#B89D47] animate-pulse" />
-              OPEN
-            </span>
-          </div>
-
-          <span className="text-zinc-700 hidden sm:inline">|</span>
-
-          {/* Status 3: Participants */}
-          <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-[11px]">PARTICIPANTS:</span>
-            <span className="text-white font-bold">2,481</span>
-          </div>
-
-          <span className="text-zinc-700 hidden sm:inline">|</span>
-
-          {/* Status 4: Events */}
-          <div className="flex items-center gap-2">
-            <span className="text-zinc-500 text-[11px]">EVENTS:</span>
-            <span className="text-[#B89D47] font-bold">32</span>
-          </div>
+    <section id="hero" className="relative min-h-[90vh] flex flex-col justify-between pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Top Banner Navigation Pill */}
+      <div className="w-full flex flex-wrap items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl border border-white/[0.08] bg-[#0E1320]/60 backdrop-blur-xl mb-8 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+        {/* Date & Location Pill */}
+        <div className="flex items-center gap-2 sm:gap-3 text-xs text-zinc-300">
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-semibold text-[11px] border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            REGISTRATIONS OPEN
+          </span>
+          <span className="hidden md:inline text-zinc-600">·</span>
+          <span className="hidden md:flex items-center gap-1.5 text-zinc-400 text-xs">
+            <Calendar className="w-3.5 h-3.5 text-[#D4AF37]" />
+            17–18 October 2026
+          </span>
+          <span className="hidden md:inline text-zinc-600">·</span>
+          <span className="hidden md:flex items-center gap-1.5 text-zinc-400 text-xs">
+            <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+            MVSR Engineering College, Hyderabad
+          </span>
         </div>
 
-        {/* Quick controls: Audio & Replay Boot */}
-        <div className="flex items-center gap-3">
+        {/* Quick Ambient Controls */}
+        <div className="flex items-center gap-2">
           <button
             onClick={toggleSound}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#355E58]/50 bg-[#053229]/40 hover:border-[#CFB97E] text-xs font-mono text-zinc-300 transition"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-white/10 bg-white/[0.03] hover:border-white/20 text-xs text-zinc-400 hover:text-white transition"
           >
-            {audioMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#CFB97E]" />}
-            <span className="text-[10px]">{audioMuted ? "MUTED" : "SOUND ON"}</span>
+            {audioMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" />}
+            <span className="text-[11px] font-medium">{audioMuted ? "Muted" : "Sound"}</span>
           </button>
 
           <button
@@ -96,95 +76,116 @@ export default function FuturisticHero({
               soundFx.playClickTone();
               onReplayIntro();
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#CFB97E]/30 bg-[#B89D47]/10 text-[#CFB97E] hover:bg-[#B89D47]/20 text-xs font-mono transition"
-            title="Replay Cinematic Photo Intro"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#D4AF37]/20 bg-[#D4AF37]/5 text-[#D4AF37] hover:bg-[#D4AF37]/10 text-xs transition"
+            title="Replay Festival Video Intro"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-bold">REPLAY INTRO</span>
+            <span className="text-[11px] font-semibold">Intro</span>
           </button>
-
         </div>
       </div>
 
-      {/* Main Hero Centerpiece */}
-      <div className="text-center max-w-4xl mx-auto my-auto py-8">
+      {/* Main Center Hero */}
+      <div className="text-center max-w-4xl mx-auto my-auto py-6 sm:py-10">
         {/* Department Eyebrow */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#CFB97E]/35 bg-[#053229]/60 text-[#CFB97E] font-mono text-xs tracking-[0.25em] uppercase mb-6 shadow-[0_0_20px_rgba(184,157,71,0.15)]">
-          <Terminal className="w-3.5 h-3.5 text-[#B89D47]" />
-          <span>DEPT. OF COMPUTER SCIENCE & ENGINEERING</span>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/5 text-[#D4AF37] text-xs font-semibold tracking-wider uppercase mb-6 backdrop-blur-md">
+          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+          <span>DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING</span>
         </div>
 
-        {/* Heading: Fest Name */}
-        <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black font-cyber text-white tracking-tight leading-[1.05]">
-          SANGAMAM <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#FE9179]">2026</span>
+        {/* Main Fest Heading */}
+        <h1 className="text-5xl sm:text-7xl lg:text-8xl font-display font-extrabold text-white tracking-tight leading-[1.05]">
+          SANGAMAM <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F4E3BA] via-[#D4AF37] to-[#C99D42]">2026</span>
         </h1>
 
-        {/* Large Subtitle: COMPUTE. CREATE. COMPETE. */}
-        <div className="mt-4 text-xl sm:text-3xl font-cyber font-bold tracking-[0.2em] text-[#CFB97E] uppercase">
-          COMPUTE. CREATE. COMPETE.
+        {/* Refined Subtitle */}
+        <div className="mt-4 text-lg sm:text-2xl font-sans font-medium tracking-wide text-zinc-200">
+          Compute · Create · Compete
         </div>
 
-        {/* Supporting text */}
-        <p className="mt-4 text-base sm:text-lg text-[#FFEDD1]/80 font-sans italic max-w-2xl mx-auto">
-          &ldquo;Where code meets creativity.&rdquo;
+        {/* Narrative description */}
+        <p className="mt-4 text-base sm:text-lg text-zinc-400 font-normal max-w-2xl mx-auto leading-relaxed">
+          The premier annual national fest and 24-hour hackathon. Join 2,500+ students from across India for two days of breakthrough code, electrifying live music, and stand-up comedy.
         </p>
 
-        {/* Action Buttons: [ EXPLORE EVENTS ] and [ REGISTER NOW ] */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-          <button
-            onClick={() => {
-              soundFx.playClickTone();
-              onExploreEvents();
-            }}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl font-cyber font-bold text-xs sm:text-sm tracking-widest uppercase border border-[#CFB97E]/40 bg-[#053229]/60 hover:bg-[#053229]/90 text-[#FFEDD1] hover:text-white transition-all shadow-[0_0_25px_rgba(207,185,126,0.15)] flex items-center justify-center gap-3"
-          >
-            <span>EXPLORE EVENTS</span>
-            <ArrowRight className="w-4 h-4 text-[#B89D47]" />
-          </button>
-
+        {/* Action Buttons */}
+        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5">
           <button
             onClick={() => {
               soundFx.playClickTone();
               onOpenRegister();
             }}
-            className="w-full sm:w-auto px-9 py-4 rounded-xl font-cyber font-black text-xs sm:text-sm tracking-widest uppercase bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black hover:brightness-110 shadow-[0_0_35px_rgba(184,157,71,0.4)] hover:shadow-[0_0_45px_rgba(184,157,71,0.7)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold text-sm tracking-wide bg-gradient-to-r from-[#F4E3BA] via-[#D4AF37] to-[#C99D42] text-black hover:brightness-105 shadow-[0_4px_24px_rgba(212,175,55,0.3)] hover:shadow-[0_6px_30px_rgba(212,175,55,0.45)] transition-all transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2.5"
           >
-            <span>REGISTER NOW</span>
+            <span>Register Now</span>
             <Sparkles className="w-4 h-4 text-black" />
           </button>
+
+          <button
+            onClick={() => {
+              soundFx.playClickTone();
+              onExploreEvents();
+            }}
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-sm tracking-wide border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/20 text-white transition-all shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex items-center justify-center gap-2"
+          >
+            <span>Explore Events & Schedule</span>
+            <ArrowRight className="w-4 h-4 text-zinc-400" />
+          </button>
+        </div>
+
+        {/* Key Highlights Metrics Pill */}
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-md text-center">
+            <Trophy className="w-4 h-4 text-[#D4AF37] mx-auto mb-1 opacity-80" />
+            <div className="text-white font-bold text-base">₹1,50,000+</div>
+            <div className="text-[11px] text-zinc-400">Prize Pool</div>
+          </div>
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-md text-center">
+            <Layers className="w-4 h-4 text-[#D4AF37] mx-auto mb-1 opacity-80" />
+            <div className="text-white font-bold text-base">13 Events</div>
+            <div className="text-[11px] text-zinc-400">Tech & Cultural</div>
+          </div>
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-md text-center">
+            <Users className="w-4 h-4 text-[#D4AF37] mx-auto mb-1 opacity-80" />
+            <div className="text-white font-bold text-base">2,500+</div>
+            <div className="text-[11px] text-zinc-400">Participants</div>
+          </div>
+          <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-md text-center">
+            <Sparkles className="w-4 h-4 text-[#D4AF37] mx-auto mb-1 opacity-80" />
+            <div className="text-white font-bold text-base">24 Hours</div>
+            <div className="text-[11px] text-zinc-400">Hackathon Non-Stop</div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Live Countdown Timer & Telemetry Box */}
-      <div className="mt-12 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-zinc-400">
-        <div className="flex items-center gap-2">
-          <Activity className="w-4 h-4 text-[#B89D47] animate-pulse" />
-          <span>FEST COMMENCEMENT:</span>
-          <span className="text-white font-bold">17–18 OCTOBER 2026</span>
-          <span className="text-zinc-600">//</span>
-          <span className="text-zinc-400">HYDERABAD, INDIA</span>
+      {/* Bottom Soft Live Countdown Timepiece */}
+      <div className="mt-8 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+        <div className="flex items-center gap-2 font-medium">
+          <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+          <span className="text-zinc-300">COMMENCING IN:</span>
+          <span className="text-zinc-500 font-normal">October 17–18, 2026</span>
         </div>
 
-        {/* Live Countdown Grid */}
-        <div className="flex items-center gap-3 text-center">
-          <div className="px-3 py-1.5 rounded-lg bg-black/50 border border-white/10">
-            <span className="text-white font-bold text-sm block font-cyber">{countdown.days}</span>
-            <span className="text-[9px] text-zinc-500">DAYS</span>
+        {/* Clean, Soft Countdown Display */}
+        <div className="flex items-center gap-2 text-center" suppressHydrationWarning>
+          <div className="px-3.5 py-1.5 rounded-lg bg-[#0F1320]/80 border border-white/[0.08] backdrop-blur-md shadow-sm">
+            <span className="text-white font-bold text-sm block font-sans">{countdown.days}</span>
+            <span className="text-[9px] text-zinc-500 font-medium">DAYS</span>
           </div>
-          <span className="text-zinc-600">:</span>
-          <div className="px-3 py-1.5 rounded-lg bg-black/50 border border-white/10">
-            <span className="text-white font-bold text-sm block font-cyber">{countdown.hours}</span>
-            <span className="text-[9px] text-zinc-500">HRS</span>
+          <span className="text-zinc-600 font-bold">:</span>
+          <div className="px-3.5 py-1.5 rounded-lg bg-[#0F1320]/80 border border-white/[0.08] backdrop-blur-md shadow-sm">
+            <span className="text-white font-bold text-sm block font-sans">{countdown.hours}</span>
+            <span className="text-[9px] text-zinc-500 font-medium">HOURS</span>
           </div>
-          <span className="text-zinc-600">:</span>
-          <div className="px-3 py-1.5 rounded-lg bg-black/50 border border-white/10">
-            <span className="text-white font-bold text-sm block font-cyber">{countdown.minutes}</span>
-            <span className="text-[9px] text-zinc-500">MIN</span>
+          <span className="text-zinc-600 font-bold">:</span>
+          <div className="px-3.5 py-1.5 rounded-lg bg-[#0F1320]/80 border border-white/[0.08] backdrop-blur-md shadow-sm">
+            <span className="text-white font-bold text-sm block font-sans">{countdown.minutes}</span>
+            <span className="text-[9px] text-zinc-500 font-medium">MINS</span>
           </div>
-          <span className="text-zinc-600">:</span>
-          <div className="px-3 py-1.5 rounded-lg bg-black/50 border border-white/10">
-            <span className="text-[#B89D47] font-bold text-sm block font-cyber">{countdown.seconds}</span>
-            <span className="text-[9px] text-zinc-500">SEC</span>
+          <span className="text-zinc-600 font-bold">:</span>
+          <div className="px-3.5 py-1.5 rounded-lg bg-[#0F1320]/80 border border-white/[0.08] backdrop-blur-md shadow-sm">
+            <span className="text-[#D4AF37] font-bold text-sm block font-sans">{countdown.seconds}</span>
+            <span className="text-[9px] text-zinc-500 font-medium">SECS</span>
           </div>
         </div>
       </div>
