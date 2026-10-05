@@ -11,3 +11,5 @@ build
 .DS_Store
 .claude
 agent
+.agents
+skills-lock.json
