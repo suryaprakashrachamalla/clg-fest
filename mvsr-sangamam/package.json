@@ -28,7 +28,8 @@
     "test:api": "node scripts/test-api-e2e.mjs",
     "test:roundtrip": "node scripts/test-full-roundtrip.mjs",
     "test:extensive": "node scripts/test-extensive.mjs",
-    "test": "npm run test:e2e && npm run test:api && npm run test:roundtrip && npm run test:extensive"
+    "test:concurrency": "node scripts/test-concurrency-security.mjs",
+    "test": "npm run test:e2e && npm run test:api && npm run test:roundtrip && npm run test:extensive && npm run test:concurrency"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.1.0",
