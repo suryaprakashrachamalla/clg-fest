@@ -1,7 +1,7 @@
 import { Event } from "@prisma/client";
 import { prisma } from "../db/prisma.client";
 import { FEST } from "../config/fest.config";
-import { EventInput, eventInputToData, Prize, Coordinator, Faq } from "../validators/event.validator";
+import { EventInput, UpdateEventInput, eventInputToData, Prize, Coordinator, Faq, splitLines, parsePrizes, parseCoordinators, parseFaqs } from "../validators/event.validator";
 import { HttpError } from "../utils/response.util";
 
 export function toPublicEvent(e: Event, confirmedUnits: number) {
@@ -121,28 +121,56 @@ export class EventService {
     return { id: event.id, slug: event.slug };
   }
 
-  async updateEvent(id: string, input: EventInput) {
+  async updateEvent(id: string, input: UpdateEventInput) {
     const existing = await prisma.event.findUnique({ where: { id } });
     if (!existing) throw new HttpError(404, "Event not found.", "NOT_FOUND");
 
-    if (input.slug !== existing.slug) {
+    if (input.slug && input.slug !== existing.slug) {
       const slugClash = await prisma.event.findUnique({ where: { slug: input.slug } });
       if (slugClash && slugClash.id !== id) {
         throw new HttpError(409, "An event with this slug already exists.", "SLUG_TAKEN");
       }
     }
 
-    const data = eventInputToData(input);
+    const data: any = {};
+    if (input.name !== undefined) data.name = input.name;
+    if (input.slug !== undefined) data.slug = input.slug;
+    if (input.category !== undefined) data.category = input.category;
+    if (input.tagline !== undefined) data.tagline = input.tagline;
+    if (input.description !== undefined) data.description = input.description;
+    if (input.eligibility !== undefined) data.eligibility = input.eligibility;
+    if (input.startsAt !== undefined) data.startsAt = input.startsAt;
+    if (input.endsAt !== undefined) data.endsAt = input.endsAt;
+    if (input.venue !== undefined) data.venue = input.venue;
+    if (input.fee !== undefined) data.fee = input.fee;
+    if (input.pricingMode !== undefined) data.pricingMode = input.pricingMode;
+    if (input.participationType !== undefined) {
+      data.participationType = input.participationType;
+      if (input.participationType === "INDIVIDUAL") {
+        data.minTeamSize = 1;
+        data.maxTeamSize = 1;
+      }
+    }
+    if (input.minTeamSize !== undefined) data.minTeamSize = input.minTeamSize;
+    if (input.maxTeamSize !== undefined) data.maxTeamSize = input.maxTeamSize;
+    if (input.capacity !== undefined) data.capacity = input.capacity;
+    if (input.teamCodePrefix !== undefined) data.teamCodePrefix = input.teamCodePrefix;
+    if (input.accent !== undefined) data.accent = input.accent;
+    if (input.requiresStudentId !== undefined) data.requiresStudentId = input.requiresStudentId;
+    if (input.isPublished !== undefined) data.isPublished = input.isPublished;
+    if (input.registrationOpen !== undefined) data.registrationOpen = input.registrationOpen;
+    if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
+
+    if (input.rulesText !== undefined) data.rules = splitLines(input.rulesText);
+    if (input.prizesText !== undefined) data.prizes = parsePrizes(input.prizesText) as any;
+    if (input.coordinatorsText !== undefined) data.coordinators = parseCoordinators(input.coordinatorsText) as any;
+    if (input.faqsText !== undefined) data.faqs = parseFaqs(input.faqsText) as any;
+
     const updated = await prisma.event.update({
       where: { id },
-      data: {
-        ...data,
-        prizes: data.prizes as any,
-        coordinators: data.coordinators as any,
-        faqs: data.faqs as any,
-      },
+      data,
     });
-    return { id: updated.id, slug: updated.slug };
+    return { id: updated.id, slug: updated.slug, fee: updated.fee, capacity: updated.capacity };
   }
 
   async deleteEvent(id: string) {

@@ -221,13 +221,14 @@ export default function EventDetailsClient({ event, cardData }: EventDetailsClie
                   REGISTRATIONS FULL
                 </span>
               ) : (
-                <button
-                  onClick={handleOpenRegister}
+                <Link
+                  href={`/register/${event.slug}`}
+                  onClick={() => soundFx.playClickTone()}
                   className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black font-cyber font-black text-xs uppercase tracking-widest hover:brightness-110 shadow-[0_0_25px_rgba(184,157,71,0.5)] transition flex items-center gap-2"
                 >
                   <span>REGISTER NOW</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               )}
             </div>
           </div>
@@ -403,12 +404,13 @@ export default function EventDetailsClient({ event, cardData }: EventDetailsClie
                 Lock in your team before slots reach capacity. Instant digital pass issued upon registration.
               </p>
               {!isFull && (
-                <button
-                  onClick={handleOpenRegister}
-                  className="w-full py-3.5 text-xs font-cyber font-black uppercase tracking-wider rounded-xl bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black hover:brightness-110 shadow-[0_0_20px_rgba(184,157,71,0.4)] transition"
+                <Link
+                  href={`/register/${event.slug}`}
+                  onClick={() => soundFx.playClickTone()}
+                  className="block w-full py-3.5 text-xs font-cyber font-black uppercase tracking-wider rounded-xl bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47] text-black hover:brightness-110 shadow-[0_0_20px_rgba(184,157,71,0.4)] transition text-center"
                 >
                   REGISTER NOW
-                </button>
+                </Link>
               )}
             </div>
           </div>

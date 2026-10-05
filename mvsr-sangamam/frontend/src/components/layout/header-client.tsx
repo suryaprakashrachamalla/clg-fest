@@ -9,7 +9,7 @@ import { cx } from "@/lib/format";
 
 const NAV = [
   { href: "/", label: "Home" },
-  { href: "/#events", label: "Events" },
+  { href: "/events", label: "Events" },
   { href: "/events/hackathon", label: "Hackathon" },
   { href: "/#schedule", label: "Schedule" },
   { href: "/#about", label: "About" },

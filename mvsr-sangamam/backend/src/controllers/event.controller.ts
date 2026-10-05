@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { eventService } from "../services/event.service";
-import { eventInputSchema } from "../validators/event.validator";
+import { eventInputSchema, updateEventInputSchema } from "../validators/event.validator";
 import { sendSuccess, HttpError } from "../utils/response.util";
 
 export class EventController {
@@ -56,7 +56,7 @@ export class EventController {
   async updateEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const id = String(req.params.id);
-      const input = eventInputSchema.parse(req.body);
+      const input = updateEventInputSchema.parse(req.body);
       const result = await eventService.updateEvent(id, input);
       return sendSuccess(res, result);
     } catch (err) {

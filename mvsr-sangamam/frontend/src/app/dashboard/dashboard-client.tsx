@@ -112,7 +112,7 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href="/#events" className="btn-primary text-xs px-4 py-2.5 rounded-xl font-bold">
+          <Link href="/events" className="btn-primary text-xs px-4 py-2.5 rounded-xl font-bold">
             Explore Events
           </Link>
           <Link href="/join" className="btn-ghost text-xs px-4 py-2.5 rounded-xl font-semibold">
@@ -142,7 +142,7 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
             <p className="text-xs text-zinc-400 mb-6 max-w-md mx-auto">
               Explore national hackathons, technical paper presentations, music mobs, and comedy nights at MVSR Sangamam 2026.
             </p>
-            <Link href="/#events" className="btn-primary px-6 py-3 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+            <Link href="/events" className="btn-primary px-6 py-3 rounded-xl text-xs font-bold inline-flex items-center gap-2">
               Browse Events
             </Link>
           </div>

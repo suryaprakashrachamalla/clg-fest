@@ -9,3 +9,5 @@ next-env.d.ts
 dist
 build
 .DS_Store
+.claude
+agent
