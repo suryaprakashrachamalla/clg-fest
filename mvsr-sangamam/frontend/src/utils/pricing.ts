@@ -1,10 +1,13 @@
-import type { Event } from "@prisma/client";
+export interface PricingEvent {
+  fee: number;
+  pricingMode: string;
+  participationType: string;
+}
 
 /**
- * Server-authoritative pricing. The client may *display* the same calculation,
- * but the amount charged is always recomputed here from DB values.
+ * Client display pricing calculation mirror.
  */
-export function computeAmount(event: Pick<Event, "fee" | "pricingMode" | "participationType">, teamSize: number) {
+export function computeAmount(event: PricingEvent, teamSize: number) {
   const seats = event.participationType === "TEAM" ? teamSize : 1;
   return event.pricingMode === "PER_PARTICIPANT" ? event.fee * seats : event.fee;
 }
