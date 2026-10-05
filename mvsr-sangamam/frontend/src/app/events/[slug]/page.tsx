@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getPublicEvent } from "@/lib/events";
 import { ALL_EVENTS_DATA, EventItemData } from "@/config/flagship-events";
+import { feeLabel } from "@/lib/format";
 import EventDetailsClient from "./EventDetailsClient";
 
 export const dynamic = "force-dynamic";
@@ -48,7 +49,7 @@ export default async function EventDetailsPage({ params }: { params: { slug: str
     date: "17–18 October 2026",
     time: "Event timings announced on portal",
     highlight: event.tagline,
-    entryFee: event.fee ? `₹${(event.fee / 100).toFixed(0)} / Team` : "Free",
+    entryFee: feeLabel(event),
     rules: event.rules || [],
     specs: [event.category, "In-Person Campus", "National Participation"],
   };

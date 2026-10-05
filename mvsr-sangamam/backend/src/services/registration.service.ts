@@ -221,11 +221,7 @@ export class RegistrationService {
   private async activateTeam(tx: Tx, registrationId: string, event: Event) {
     const team = await tx.team.findUnique({ where: { registrationId } });
     if (!team) return;
-    const { teamSeq } = await tx.event.update({
-      where: { id: event.id },
-      data: { teamSeq: { increment: 1 } },
-      select: { teamSeq: true },
-    });
+    const teamSeq = await eventRepository.incrementTeamSeq(tx, event.id);
     const prefix = event.teamCodePrefix || `TEAM-${FEST.edition}`;
     await tx.team.update({
       where: { id: team.id },

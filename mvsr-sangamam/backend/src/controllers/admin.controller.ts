@@ -17,8 +17,9 @@ export class AdminController {
 
   async exportCsv(req: Request, res: Response, next: NextFunction) {
     try {
-      const csv = await adminService.exportRegistrationsCsv();
-      const filename = `sangamam-registrations-${new Date().toISOString().slice(0, 10)}.csv`;
+      const eventId = (req.query.eventId || req.query.event) ? String(req.query.eventId || req.query.event) : undefined;
+      const csv = await adminService.exportRegistrationsCsv(eventId);
+      const filename = `sangamam-registrations-${eventId ? `${eventId}-` : ""}${new Date().toISOString().slice(0, 10)}.csv`;
       res.setHeader("Content-Type", "text/csv; charset=utf-8");
       res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
       return res.status(200).send(csv);

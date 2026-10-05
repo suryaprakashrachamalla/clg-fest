@@ -7,10 +7,6 @@ export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 function base64UrlEncode(data: Uint8Array | string): string {
   const binary = typeof data === "string" ? new TextEncoder().encode(data) : data;
-  let str = "";
-  for (let i = 0; i < binary.length; i++) {
-    str += String.fromCharCode(binary[i]);
-  }
   return Buffer.from(binary).toString("base64url");
 }
 
@@ -18,7 +14,7 @@ function base64UrlDecode(str: string): Uint8Array {
   return Buffer.from(str, "base64url");
 }
 
-async function getKey(): Promise<any> {
+async function getKey(): Promise<crypto.webcrypto.CryptoKey> {
   const secret = ENV.AUTH_SECRET || "default_super_secret_session_key_sangamam_2026_mvsr_32chars";
   return await crypto.subtle.importKey(
     "raw",

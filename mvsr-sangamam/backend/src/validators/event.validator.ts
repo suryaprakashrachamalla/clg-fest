@@ -34,7 +34,22 @@ export const eventInputSchema = z
       .regex(/^[A-Z0-9-]{2,16}$/)
       .optional()
       .or(z.literal("").transform(() => undefined)),
-    accent: z.enum(["violet", "fuchsia", "cyan", "amber", "lime", "rose"]).default("violet"),
+    accent: z
+      .enum([
+        "gold",
+        "sage",
+        "coral",
+        "spruce",
+        "peacock",
+        "arctic",
+        "violet",
+        "fuchsia",
+        "cyan",
+        "amber",
+        "lime",
+        "rose",
+      ])
+      .default("violet"),
     requiresStudentId: z.coerce.boolean().default(false),
     isPublished: z.coerce.boolean().default(true),
     registrationOpen: z.coerce.boolean().default(true),

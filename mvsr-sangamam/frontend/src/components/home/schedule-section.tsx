@@ -166,7 +166,7 @@ export function ScheduleSection({ events }: ScheduleProps) {
                         <span className="px-2 py-0.5 rounded text-[10px] font-cyber font-bold uppercase bg-[#053229] text-[#BCDDDC] border border-[#355E58]">
                           {event.category}
                         </span>
-                        <span className="text-xs font-cyber font-bold text-zinc-300">
+                        <span className="text-xs font-cyber font-bold text-zinc-300" suppressHydrationWarning>
                           {fmtTime(event.startsAt)}
                         </span>
                       </div>

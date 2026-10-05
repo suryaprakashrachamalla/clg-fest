@@ -94,7 +94,7 @@ export function EventCard({ event, onOpenModal }: EventCardProps) {
         <div className="mt-4 space-y-1.5 text-xs text-zinc-400 border-t border-white/5 pt-4">
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5 text-brand-cyan shrink-0" />
-            <span>{fmtDate(event.startsAt)}, {fmtTime(event.startsAt)}</span>
+            <span suppressHydrationWarning>{fmtDate(event.startsAt)}, {fmtTime(event.startsAt)}</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-3.5 h-3.5 text-brand-fuchsia shrink-0" />

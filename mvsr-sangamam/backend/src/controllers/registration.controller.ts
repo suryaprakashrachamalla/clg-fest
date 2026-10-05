@@ -94,6 +94,10 @@ export class RegistrationController {
         throw new HttpError(404, "Registration not found.", "NOT_FOUND");
       }
 
+      if (reg.status !== "PENDING") {
+        throw new HttpError(400, "Only pending registrations can be cancelled.", "INVALID_STATE");
+      }
+
       const released = await registrationService.releaseRegistration(id, "CANCELLED");
       return sendSuccess(res, { success: released });
     } catch (err) {

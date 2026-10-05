@@ -4,45 +4,66 @@ export function formatINR(rupees: number) {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(rupees);
 }
 
-const TZ = "Asia/Kolkata";
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
 
-export function fmtDate(iso: string | Date, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" }) {
-  return new Intl.DateTimeFormat("en-IN", { timeZone: TZ, ...opts }).format(new Date(iso));
+function toIstDate(iso: string | Date): Date | null {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  return new Date(d.getTime() + IST_OFFSET_MS);
 }
+
+export function fmtDate(iso: string | Date, opts?: Intl.DateTimeFormatOptions) {
+  const ist = toIstDate(iso);
+  if (!ist) return "";
+  const day = ist.getUTCDate();
+  const month = MONTHS[ist.getUTCMonth()];
+  return `${day} ${month}`;
+}
+
 export function fmtTime(iso: string | Date) {
-  return new Intl.DateTimeFormat("en-IN", { timeZone: TZ, hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(iso));
+  const ist = toIstDate(iso);
+  if (!ist) return "";
+  let hours = ist.getUTCHours();
+  const minutes = ist.getUTCMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  const minuteStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  return `${hours}:${minuteStr} ${ampm}`;
 }
+
 export function fmtDateTime(iso: string | Date) {
-  return new Intl.DateTimeFormat("en-IN", {
-    timeZone: TZ,
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  }).format(new Date(iso));
+  const ist = toIstDate(iso);
+  if (!ist) return "";
+  const day = ist.getUTCDate();
+  const month = MONTHS[ist.getUTCMonth()];
+  const year = ist.getUTCFullYear();
+  let hours = ist.getUTCHours();
+  const minutes = ist.getUTCMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+  const minuteStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  return `${day} ${month} ${year}, ${hours}:${minuteStr} ${ampm}`;
 }
+
 /** "2026-10-17" in IST */
 export function istDayKey(iso: string | Date | undefined) {
   if (!iso) return "2026-10-17";
-  try {
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return "2026-10-17";
-    return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
-  } catch {
-    return "2026-10-17";
-  }
+  const ist = toIstDate(iso);
+  if (!ist) return "2026-10-17";
+  const y = ist.getUTCFullYear();
+  const m = String(ist.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(ist.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
+
 export function istHour(iso: string | Date | undefined) {
   if (!iso) return 10;
-  try {
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return 10;
-    return Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hour12: false }).format(d));
-  } catch {
-    return 10;
-  }
+  const ist = toIstDate(iso);
+  if (!ist) return 10;
+  return ist.getUTCHours();
 }
 
 

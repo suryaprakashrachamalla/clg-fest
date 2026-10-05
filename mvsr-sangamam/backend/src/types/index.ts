@@ -9,10 +9,13 @@ export interface SessionPayload {
   name: string;
 }
 
+export type SafeUser = Omit<User, "passwordHash">;
+
 export type AuthenticatedUser = User;
 
 export interface AuthenticatedRequest extends Request {
   user?: AuthenticatedUser;
+  safeUser?: SafeUser;
   session?: SessionPayload;
 }
 

@@ -96,8 +96,9 @@ export class AdminService {
     };
   }
 
-  async exportRegistrationsCsv() {
+  async exportRegistrationsCsv(eventId?: string) {
     const regs = await prisma.registration.findMany({
+      where: eventId && eventId !== "ALL" ? { eventId } : {},
       orderBy: { createdAt: "asc" },
       include: {
         event: true,

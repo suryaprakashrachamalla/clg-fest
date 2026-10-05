@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "../utils/session";
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5001";
 
 /**
  * Server-side fetch helper communicating directly with the backend REST service.

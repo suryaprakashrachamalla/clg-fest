@@ -80,14 +80,14 @@ export default function SangamamExperience() {
               ALL_EVENTS_DATA.map((e) => ({
                 ...e,
                 startsAt:
-                  e.date.includes("18") && !e.date.includes("17")
-                    ? "2026-10-18T16:00:00+05:30"
-                    : e.date.includes("18")
-                    ? "2026-10-17T10:00:00+05:30"
-                    : "2026-10-17T11:30:00+05:30",
-                participationType: "TEAM",
-                minTeamSize: 2,
-                maxTeamSize: e.slug.includes("band") ? 8 : 4,
+                  e.slug.includes("comedy")
+                    ? "2026-10-18T18:00:00+05:30"
+                    : e.slug.includes("music")
+                    ? "2026-10-17T16:30:00+05:30"
+                    : "2026-10-17T10:00:00+05:30",
+                participationType: e.slug.includes("comedy") ? "INDIVIDUAL" : "TEAM",
+                minTeamSize: e.slug.includes("comedy") ? 1 : 2,
+                maxTeamSize: e.slug.includes("music") ? 6 : e.slug.includes("comedy") ? 1 : 4,
                 feePerParticipantPaise: 20000,
                 accentColor: e.category === "TECHNICAL" ? "gold" : e.category === "SEMITECHNICAL" ? "sage" : "coral",
               })) as any

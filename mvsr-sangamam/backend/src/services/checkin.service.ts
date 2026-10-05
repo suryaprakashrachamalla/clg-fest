@@ -48,6 +48,13 @@ export class CheckinService {
     if (!r) throw new HttpError(404, "Invalid QR code.", "INVALID");
     if (r.status !== "CONFIRMED") throw new HttpError(409, "Registration is not confirmed.", "NOT_CONFIRMED");
 
+    const existing = await prisma.checkIn.findUnique({
+      where: { registrationId: r.id },
+    });
+    if (existing) {
+      return { status: "already" as const, card: await this.getVerificationCard(token) };
+    }
+
     try {
       await prisma.checkIn.create({
         data: { registrationId: r.id, checkedInById: organizer.id },

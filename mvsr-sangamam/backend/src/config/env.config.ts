@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
 
 export const ENV = {
-  PORT: parseInt(process.env.PORT || "5000", 10),
+  PORT: parseInt(process.env.PORT || "5001", 10),
   NODE_ENV: process.env.NODE_ENV || "development",
   DATABASE_URL: process.env.DATABASE_URL || "postgresql://sangamam:sangamam@localhost:5433/sangamam?schema=public",
   AUTH_SECRET: process.env.AUTH_SECRET || "sangamam_default_jwt_secret_must_be_over_32_characters_long",

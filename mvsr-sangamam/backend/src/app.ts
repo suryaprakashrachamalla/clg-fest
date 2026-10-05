@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { apiRouter } from "./routes";
 import { errorHandler } from "./middlewares/error.middleware";
 import { ENV } from "./config/env.config";
+import { HttpError } from "./utils/response.util";
 
 export const app = express();
 
@@ -50,13 +51,11 @@ app.get("/health", (_req, res) => {
 // Mount the API Router under /api
 app.use("/api", apiRouter);
 
+// 404 Catch-All
+app.use((req, _res, next) => {
+  next(new HttpError(404, `Route ${req.method} ${req.originalUrl} not found.`, "NOT_FOUND"));
+});
+
 // Global Error Handler
 app.use(errorHandler);
 
-// 404 Catch-All
-app.use((req, res) => {
-  res.status(404).json({
-    error: `Route ${req.method} ${req.originalUrl} not found.`,
-    code: "NOT_FOUND",
-  });
-});

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import TechnicalEventPanel from "./TechnicalEventPanel";
 import { soundFx } from "@/utils/audio";
-import { Cpu, Terminal, Music2, Sparkles, Layers } from "lucide-react";
+import { Mic, Terminal, Music2, Sparkles, Layers } from "lucide-react";
 import { ALL_EVENTS_DATA, EventItemData } from "@/config/flagship-events";
 
 export { ALL_EVENTS_DATA };
@@ -47,15 +47,15 @@ export default function EventCategoriesSection({
     {
       id: "SEMITECHNICAL" as const,
       label: "SEMITECHNICAL",
-      sub: "ROBOWARS ARENA",
-      icon: Cpu,
+      sub: "MUSIC MOB",
+      icon: Music2,
       color: "border-[#CFB97E] text-[#CFB97E] bg-[#355E58]/35 shadow-[0_0_25px_rgba(207,185,126,0.2)]",
     },
     {
       id: "CULTURAL" as const,
       label: "CULTURAL",
-      sub: "BATTLE OF THE BANDS",
-      icon: Music2,
+      sub: "COMEDY NIGHT",
+      icon: Mic,
       color: "border-[#FE9179] text-[#FE9179] bg-[#FE9179]/15 shadow-[0_0_25px_rgba(254,145,121,0.2)]",
     },
   ];
@@ -75,7 +75,7 @@ export default function EventCategoriesSection({
           CHOOSE YOUR <span className="text-[#B89D47] italic">DOMAIN</span>
         </h2>
         <p className="mt-4 text-sm sm:text-base text-[#FFEDD1]/80 font-sans leading-relaxed">
-          From the 24-hour national hackathon to combat robotics and high-energy stage music performances.
+          From the 24-hour national hackathon to the high-energy synchronized Music Mob and premier live Comedy Night.
         </p>
       </div>
 

@@ -55,6 +55,27 @@ export class PaymentController {
             method: p.method,
           });
         }
+      } else if (event === "order.paid") {
+        const p = req.body?.payload?.payment?.entity;
+        const o = req.body?.payload?.order?.entity;
+        const orderId = p?.order_id || o?.id;
+        const paymentId = p?.id;
+        if (orderId && paymentId) {
+          await paymentService.confirmPayment({
+            orderId,
+            paymentId,
+            method: p?.method,
+          });
+        }
+      } else if (event === "payment.failed") {
+        const p = req.body?.payload?.payment?.entity;
+        if (p?.order_id) {
+          await paymentService.recordPaymentFailure({
+            orderId: p.order_id,
+            kind: "failed",
+            reason: p.error_description || "Payment failed at gateway",
+          });
+        }
       }
 
       return sendSuccess(res, { status: "ok" });

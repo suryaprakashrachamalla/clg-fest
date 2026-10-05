@@ -91,7 +91,7 @@ export class EventService {
   async getPublicStats() {
     const [events, participantsLead, participantsMembers, categories] = await Promise.all([
       eventRepository.countPublished(),
-      registrationRepository.count({ status: "CONFIRMED", team: null }),
+      registrationRepository.count({ status: "CONFIRMED", team: { is: null } }),
       prisma.teamMember.count({ where: { team: { status: "ACTIVE" } } }),
       prisma.event.groupBy({ by: ["category"], where: { isPublished: true } }),
     ]);

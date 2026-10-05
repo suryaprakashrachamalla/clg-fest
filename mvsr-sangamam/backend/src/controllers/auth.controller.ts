@@ -50,7 +50,11 @@ export class AuthController {
   }
 
   async getMe(req: AuthenticatedRequest, res: Response) {
-    return sendSuccess(res, { user: req.user ?? null });
+    if (!req.user) {
+      return sendSuccess(res, { user: null });
+    }
+    const { passwordHash: _hash, ...safeUser } = req.user;
+    return sendSuccess(res, { user: safeUser });
   }
 }
 
