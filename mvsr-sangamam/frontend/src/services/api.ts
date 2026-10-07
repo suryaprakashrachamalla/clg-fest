@@ -11,7 +11,7 @@ async function serverFetch<T>(path: string, options: RequestInit = {}): Promise<
   try {
     let cookieHeader = "";
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const token = cookieStore.get(SESSION_COOKIE)?.value;
       if (token) {
         cookieHeader = `${SESSION_COOKIE}=${token}`;

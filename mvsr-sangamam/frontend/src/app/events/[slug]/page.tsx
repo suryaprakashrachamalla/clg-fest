@@ -8,12 +8,14 @@ import { feeLabel, fmtDate, fmtTime, formatINR, teamSizeLabel } from "@/utils/fo
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const event = await getEvent(params.slug);
   return { title: event?.name ?? "Event" };
 }
 
-export default async function EventPage({ params }: { params: { slug: string } }) {
+export default async function EventPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const [event, user] = await Promise.all([getEvent(params.slug), fetchCurrentUser()]);
   if (!event) notFound();
 

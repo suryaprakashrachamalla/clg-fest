@@ -3,7 +3,8 @@ import { VerifyClient } from "./verify-client";
 
 export const dynamic = "force-dynamic";
 
-export default async function VerifyPage({ params }: { params: { token: string } }) {
+export default async function VerifyPage(props: { params: Promise<{ token: string }> }) {
+  const params = await props.params;
   const [user, card] = await Promise.all([
     fetchCurrentUser(),
     fetchVerificationCard(params.token),
