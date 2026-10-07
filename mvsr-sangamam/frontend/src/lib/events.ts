@@ -1,21 +1,4 @@
-import { fetchPublicEvents, fetchPublicStats, fetchPublicEvent } from "../services/api";
-
-export interface Prize {
-  place: string;
-  amount?: number;
-  label?: string;
-}
-
-export interface Coordinator {
-  name: string;
-  phone?: string;
-  email?: string;
-}
-
-export interface Faq {
-  q: string;
-  a: string;
-}
+import { fetchPublicEvent, fetchPublicEvents } from "@/services/api";
 
 export interface PublicEvent {
   id: string;
@@ -35,13 +18,10 @@ export interface PublicEvent {
   minTeamSize: number;
   maxTeamSize: number;
   capacity: number | null;
-  confirmed: number;
-  held: number;
   remaining: number | null;
-  prizes: Prize[];
-  coordinators: Coordinator[];
-  faqs: Faq[];
-  accent: string;
+  prizes: { place: string; amount?: number; label?: string }[];
+  coordinators: { name: string; phone?: string; email?: string }[];
+  faqs: { q: string; a: string }[];
   requiresStudentId: boolean;
   registrationOpen: boolean;
 }
@@ -190,33 +170,36 @@ export const FLAGSHIP_EVENTS: PublicEvent[] = [
   },
 ];
 
-export async function listPublicEvents(): Promise<PublicEvent[]> {
-  try {
-    const remote = await fetchPublicEvents();
-    if (remote && remote.length > 0) return remote;
-  } catch {}
-  return FLAGSHIP_EVENTS;
+/**
+ * The backend stores finer categories (HACKATHON, TECHNICAL, GAMING, ...).
+ * The site shows three groups; this table decides which group each event lands in.
+ * Slug overrides win over the category mapping.
+ */
+const SLUG_GROUP: Record<string, EventGroup> = {
+  "music-mob": "semitechnical",
+};
+const CATEGORY_GROUP: Record<string, EventGroup> = {
+  HACKATHON: "technical",
+  TECHNICAL: "technical",
+  WORKSHOP: "technical",
+  GAMING: "semitechnical",
+  OTHER: "semitechnical",
+  SEMITECHNICAL: "semitechnical",
+  CULTURAL: "cultural",
+};
+
+export function groupOf(e: { slug: string; category: string }): EventGroup {
+  return SLUG_GROUP[e.slug] ?? CATEGORY_GROUP[e.category] ?? "semitechnical";
 }
 
-export async function getPublicEvent(slug: string): Promise<PublicEvent | null> {
-  try {
-    const remote = await fetchPublicEvent(slug);
-    if (remote) return remote;
-  } catch {}
-  const match = FLAGSHIP_EVENTS.find((e) => e.slug === slug || e.slug.includes(slug) || slug.includes(e.slug));
-  return match ?? null;
+export function groupLabel(e: { slug: string; category: string }) {
+  return EVENT_GROUPS.find((g) => g.key === groupOf(e))!.label;
 }
 
-export async function publicStats() {
-  try {
-    const stats = await fetchPublicStats();
-    if (stats) return stats;
-  } catch {}
-  return {
-    events: 3,
-    categories: 3,
-    participants: 1250,
-    hackathonTeamLimit: 50,
-    firstPrize: 25000,
-  };
+export async function listEvents(): Promise<PublicEvent[]> {
+  return (await fetchPublicEvents()) as PublicEvent[];
+}
+
+export async function getEvent(slug: string): Promise<PublicEvent | null> {
+  return (await fetchPublicEvent(slug)) as PublicEvent | null;
 }

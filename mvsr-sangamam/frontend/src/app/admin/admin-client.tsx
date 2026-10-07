@@ -25,9 +25,9 @@ import {
   Clock,
   Check,
 } from "lucide-react";
-import { formatINR } from "@/lib/pricing";
-import { fmtDateTime, fmtDate } from "@/lib/format";
-import { CameraScanner } from "@/components/camera-scanner";
+import { formatINR } from "@/utils/pricing";
+import { fmtDateTime, fmtDate } from "@/utils/format";
+import { CameraScanner } from "@/components/scanner/camera-scanner";
 import { CATEGORIES } from "@/config/fest";
 
 interface AdminStats {

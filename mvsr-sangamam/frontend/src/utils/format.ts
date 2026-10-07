@@ -59,14 +59,6 @@ export function istDayKey(iso: string | Date | undefined) {
   return `${y}-${m}-${d}`;
 }
 
-export function istHour(iso: string | Date | undefined) {
-  if (!iso) return 10;
-  const ist = toIstDate(iso);
-  if (!ist) return 10;
-  return ist.getUTCHours();
-}
-
-
 export const ACCENTS: Record<string, { from: string; to: string; text: string; ring: string; glow: string }> = {
   gold: { from: "from-[#B89D47]", to: "to-[#CFB97E]", text: "text-[#B89D47]", ring: "group-hover:border-[#B89D47]/40", glow: "bg-[#B89D47]/25" },
   sage: { from: "from-[#CFB97E]", to: "to-[#355E58]", text: "text-[#CFB97E]", ring: "group-hover:border-[#CFB97E]/40", glow: "bg-[#CFB97E]/25" },
@@ -99,21 +91,3 @@ export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(" ");
 }
 
-/** Typed JSON fetch that surfaces server error messages. */
-export async function api<T = any>(url: string, init?: RequestInit & { json?: unknown }): Promise<T> {
-  const res = await fetch(url, {
-    ...init,
-    method: init?.method ?? (init?.json !== undefined ? "POST" : "GET"),
-    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
-    body: init?.json !== undefined ? JSON.stringify(init.json) : init?.body,
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const err = new Error(data?.error || `Request failed (${res.status})`) as Error & { code?: string; status?: number; data?: any };
-    err.code = data?.code;
-    err.status = res.status;
-    err.data = data;
-    throw err;
-  }
-  return data as T;
-}

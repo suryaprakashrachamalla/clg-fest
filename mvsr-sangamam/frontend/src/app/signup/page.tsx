@@ -3,10 +3,10 @@ import { fetchCurrentUser } from "@/services/api";
 import { AuthForm } from "@/components/auth/auth-form";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Log in" };
+export const metadata = { title: "Sign up" };
 
-export default async function LoginPage({ searchParams }: { searchParams: { next?: string } }) {
+export default async function SignupPage({ searchParams }: { searchParams: { next?: string } }) {
   const next = searchParams.next;
   if (await fetchCurrentUser()) redirect(next && next.startsWith("/") && !next.startsWith("//") ? next : "/");
-  return <AuthForm mode="login" next={next} />;
+  return <AuthForm mode="signup" next={next} />;
 }

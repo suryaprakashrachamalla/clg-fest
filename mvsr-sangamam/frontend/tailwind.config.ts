@@ -7,9 +7,16 @@ const config: Config = {
       fontFamily: {
         sans: ['"Inter Variable"', "system-ui", "sans-serif"],
         display: ['"Space Grotesk Variable"', '"Inter Variable"', "system-ui", "sans-serif"],
-        cyber: ['"Orbitron"', '"Space Grotesk Variable"', "sans-serif"],
       },
         colors: {
+          night: {
+            950: "#08090c",
+            900: "#0d0f14",
+            800: "#14171e",
+            700: "#1c2029",
+          },
+          gold: "#D9B45A",
+          tile: "#0E3B2E",
           fest: {
             arctic: "#BCDDDC",
             lace: "#FFEDD1",
