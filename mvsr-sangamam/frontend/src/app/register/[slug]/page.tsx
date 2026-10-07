@@ -1,28 +1,27 @@
 import { notFound, redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
-import { getPublicEvent } from "@/lib/events";
-import { RegisterClient } from "./register-client";
+import { getEvent } from "@/lib/events";
+import { fetchCurrentUser } from "@/services/api";
+import { RegisterFlow } from "./register-flow";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Register" };
 
 export default async function RegisterPage({ params }: { params: { slug: string } }) {
-  const event = await getPublicEvent(params.slug);
-  if (!event) notFound();
+  const user = await fetchCurrentUser();
+  if (!user) redirect(`/login?next=${encodeURIComponent(`/register/${params.slug}`)}`);
 
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect(`/login?next=/register/${params.slug}`);
-  }
+  const event = await getEvent(params.slug);
+  if (!event) notFound();
+  if (!event.registrationOpen || event.remaining === 0) redirect(`/events/${event.slug}`);
 
   return (
-    <RegisterClient
+    <RegisterFlow
       event={event}
-      currentUser={{
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        college: user.college,
+      user={{
+        name: user.name ?? "",
+        email: user.email ?? "",
+        phone: user.phone ?? "",
+        college: user.college ?? "",
         studentId: user.studentId ?? "",
       }}
     />

@@ -35,6 +35,22 @@ export const FEST = {
     address: "MVSR Engineering College, Nadergul, Balapur (M), Hyderabad, Telangana 501510",
     instagram: "",
   },
+  /** Bottom-of-home-page info cards. */
+  info: {
+    addressLines: [
+      "Maturi Venkata Subba Rao (MVSR)",
+      "Engineering College",
+      "Nadergul, Balapur Mandal,",
+      "Hyderabad, Telangana 501510",
+    ],
+    helpdeskText:
+      "Have questions regarding payment verification, QR code tickets, or team invitations? Drop an email to our tech team.",
+    hours: [
+      { day: "Day 1 (17 Oct)", time: "09:00 AM – Overnight (Hackathon)" },
+      { day: "Day 2 (18 Oct)", time: "09:00 AM – 07:00 PM (Closing Ceremony)" },
+    ],
+    helpdeskNote: "Helpdesk open at Main Gate throughout fest days",
+  },
   ceremonies: [
     {
       id: "inauguration",
