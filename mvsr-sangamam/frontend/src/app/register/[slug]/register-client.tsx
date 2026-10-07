@@ -603,7 +603,7 @@ export function RegisterClient({ event, currentUser }: Props) {
 
       {/* Razorpay Sandbox Test Simulator Modal */}
       {sandboxModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="w-full max-w-md rounded-3xl bg-[#0B0D14] border border-[#D4AF37]/30 p-6 sm:p-8 space-y-6 shadow-2xl text-center">
             <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] mx-auto flex items-center justify-center">
               <CreditCard className="w-6 h-6" />

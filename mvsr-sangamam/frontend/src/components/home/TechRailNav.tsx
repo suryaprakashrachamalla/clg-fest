@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { soundFx } from "@/utils/audio";
+import { scrollToId } from "@/components/motion/smooth-scroll";
+import { EASE } from "@/components/motion/primitives";
 
 const SECTIONS = [
   { id: "events", label: "TRACKS" },
   { id: "schedule", label: "SCHEDULE" },
   { id: "about", label: "ABOUT" },
-  { id: "faq", label: "FAQS" },
+  { id: "faqs", label: "FAQS" },
   { id: "contact", label: "CONTACT" },
 ];
 
-export default function TechRailNav() {
+export default function TechRailNav({ visible = true }: { visible?: boolean }) {
   const [activeSection, setActiveSection] = useState("events");
 
   useEffect(() => {
@@ -19,32 +22,26 @@ export default function TechRailNav() {
       const scrollPosition = window.scrollY + window.innerHeight * 0.35;
       for (const section of SECTIONS) {
         const el = document.getElementById(section.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section.id);
-            break;
-          }
+        if (el && scrollPosition >= el.offsetTop && scrollPosition < el.offsetTop + el.offsetHeight) {
+          setActiveSection(section.id);
+          break;
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    soundFx.playClickTone();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <div className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-3 select-none pointer-events-auto">
-      <div className="text-[9px] font-mono font-bold tracking-[0.25em] text-[#CFB97E]/70 [writing-mode:vertical-rl] rotate-180 mb-2">
+    <motion.nav
+      aria-label="Section navigation"
+      initial={{ opacity: 0, x: 30 }}
+      animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
+      transition={{ duration: 0.9, ease: EASE, delay: visible ? 2 : 0 }}
+      style={{ y: "-50%" }}
+      className="pointer-events-auto fixed right-4 top-1/2 z-40 hidden select-none flex-col items-end gap-3 md:flex sm:right-6"
+    >
+      <div className="mb-2 rotate-180 font-mono text-[9px] font-bold tracking-[0.25em] text-[#CFB97E]/70 [writing-mode:vertical-rl]">
         SYS_SECTOR
       </div>
 
@@ -53,26 +50,29 @@ export default function TechRailNav() {
         return (
           <button
             key={sec.id}
-            onClick={() => scrollToSection(sec.id)}
+            onClick={() => {
+              soundFx.playClickTone();
+              scrollToId(sec.id);
+            }}
             onMouseEnter={() => soundFx.playHoverBlip()}
-            className="group flex items-center flex-row-reverse gap-3 py-1 cursor-pointer focus:outline-none"
+            className="group flex cursor-pointer flex-row-reverse items-center gap-3 py-1 focus:outline-none"
             title={sec.label}
           >
-            {/* Dot */}
+            <span className="relative flex h-3 w-3 items-center justify-center">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600 transition-colors group-hover:bg-[#CFB97E]" />
+              {isActive && (
+                <motion.span
+                  layoutId="rail-active"
+                  className="absolute inset-0 rounded-full bg-[#B89D47] shadow-[0_0_12px_#B89D47]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </span>
             <span
-              className={`block rounded-full transition-all duration-300 ${
+              className={`font-mono text-[10px] uppercase tracking-widest transition-all duration-300 ${
                 isActive
-                  ? "w-3 h-3 bg-[#B89D47] shadow-[0_0_12px_#B89D47] scale-125"
-                  : "w-1.5 h-1.5 bg-zinc-600 group-hover:bg-[#CFB97E] group-hover:scale-110"
-              }`}
-            />
-
-            {/* Label reveal on hover or active */}
-            <span
-              className={`font-mono text-[10px] tracking-widest uppercase transition-all duration-200 ${
-                isActive
-                  ? "text-[#B89D47] font-bold opacity-100 translate-x-0"
-                  : "text-[#FFEDD1]/70 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+                  ? "translate-x-0 font-bold text-[#B89D47] opacity-100"
+                  : "translate-x-2 text-[#FFEDD1]/70 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
               }`}
             >
               {sec.label}
@@ -80,6 +80,6 @@ export default function TechRailNav() {
           </button>
         );
       })}
-    </div>
+    </motion.nav>
   );
 }

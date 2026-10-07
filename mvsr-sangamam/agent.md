@@ -1,7 +1,7 @@
 # AGENTS.md — MVSR Sangamam 2026 Developer & Agent Architecture Context
 
 > **Official Fest & Hackathon Platform for MVSR Sangamam 2026**  
-> *Event Dates:* 17th–18th October 2026  
+> *Event Dates:* 16th–17th October 2026  
 > *Flagship Tracks:* 1. National Hackathon (CSE Turing Labs), 2. Music Mob (Central Amphitheatre & Plaza), 3. Comedy Night (Main Stage).
 
 ---

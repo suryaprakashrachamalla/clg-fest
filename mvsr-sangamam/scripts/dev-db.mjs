@@ -9,6 +9,7 @@ const pg = new EmbeddedPostgres({
   password: "sangamam",
   port: 5433,
   persistent: true,
+  initdbFlags: ["--encoding=UTF8", "--locale=C"],
 });
 
 const fresh = !existsSync("./.pg-data/PG_VERSION");

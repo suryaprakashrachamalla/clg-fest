@@ -46,7 +46,7 @@ export default async function EventDetailsPage({ params }: { params: { slug: str
     perks: event.prizes?.[0]?.label || "",
     status: "OPEN",
     venue: event.venue,
-    date: "17–18 October 2026",
+    date: "16–17 October 2026",
     time: "Event timings announced on portal",
     highlight: event.tagline,
     entryFee: feeLabel(event),

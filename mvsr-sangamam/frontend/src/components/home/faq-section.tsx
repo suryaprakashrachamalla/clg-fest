@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronDown, HelpCircle, Search, Filter } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ChevronDown, HelpCircle, Search } from "lucide-react";
+import { EASE, Reveal, SectionHeading, Stagger, itemVariants } from "@/components/motion/primitives";
 
 interface FaqItem {
   question: string;
@@ -87,52 +89,41 @@ const CATEGORIES = [
 ] as const;
 
 export function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openQuestion, setOpenQuestion] = useState<string | null>(FAQS[0].question);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const filteredFaqs = useMemo(() => {
-    return FAQS.filter((faq) => {
-      const matchesCategory =
-        selectedCategory === "all" || faq.category === selectedCategory;
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !q ||
-        faq.question.toLowerCase().includes(q) ||
-        faq.answer.toLowerCase().includes(q);
-      return matchesCategory && matchesSearch;
-    });
+    const q = searchQuery.toLowerCase().trim();
+    return FAQS.filter(
+      (faq) =>
+        (selectedCategory === "all" || faq.category === selectedCategory) &&
+        (!q || faq.question.toLowerCase().includes(q) || faq.answer.toLowerCase().includes(q)),
+    );
   }, [searchQuery, selectedCategory]);
 
   return (
-    <section id="faqs" className="section container-x">
-      <div className="text-center max-w-3xl mx-auto mb-10">
-        <div className="eyebrow mb-2 text-[#CFB97E]">
-          <HelpCircle className="w-3.5 h-3.5 text-[#B89D47]" />
-          EVERYTHING YOU NEED TO KNOW
-        </div>
-        <h2 className="section-title">
-          Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47]">Questions</span>
-        </h2>
-        <p className="section-sub mx-auto">
-          Got questions regarding registration, payments, hackathon rules, or campus access? We’ve got answers.
-        </p>
+    <section className="section container-x">
+      <SectionHeading
+        eyebrow="Everything you need to know"
+        icon={<HelpCircle className="h-3.5 w-3.5 text-[#B89D47]" />}
+        title="Frequently Asked"
+        accent="Questions"
+        sub="Got questions regarding registration, payments, hackathon rules, or campus access? We’ve got answers."
+      />
 
-        {/* Live Search and Filters */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
-          <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search questions (e.g. UPI, team, QR pass, refund)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0A0F16]/90 border border-[#355E58]/35 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-[#B89D47]/60 transition"
-            />
-          </div>
+      <Reveal className="mx-auto -mt-6 mb-10 max-w-3xl">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <input
+            type="text"
+            placeholder="Search questions (e.g. UPI, team, QR pass, refund)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-xl border border-[#355E58]/35 bg-[#0A0F16]/90 py-2.5 pl-10 pr-4 text-sm text-white placeholder-zinc-500 transition focus:border-[#B89D47]/60 focus:shadow-[0_0_0_4px_rgba(184,157,71,0.12)] focus:outline-none"
+          />
         </div>
 
-        {/* Category Pills */}
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
           {CATEGORIES.map((cat) => {
             const active = selectedCategory === cat.id;
@@ -140,57 +131,88 @@ export function FaqSection() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                  active
-                    ? "bg-[#B89D47] text-black font-bold shadow-md shadow-[#B89D47]/20"
-                    : "bg-[#0A0F16]/80 text-zinc-400 hover:text-white border border-[#355E58]/30"
+                className={`relative rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  active ? "font-bold text-black" : "border border-[#355E58]/30 bg-[#0A0F16]/80 text-zinc-400 hover:text-white"
                 }`}
               >
-                {cat.label}
+                {active && (
+                  <motion.span
+                    layoutId="faq-cat"
+                    className="absolute inset-0 rounded-lg bg-[#B89D47] shadow-md shadow-[#B89D47]/20"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                )}
+                <span className="relative">{cat.label}</span>
               </button>
             );
           })}
         </div>
-      </div>
+      </Reveal>
 
-      <div className="max-w-3xl mx-auto space-y-3">
-        {filteredFaqs.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl bg-[#0A0F16]/60 border border-[#355E58]/20 text-zinc-400 text-sm">
-            No matching questions found for &ldquo;{searchQuery}&rdquo;. Try another search term or select &apos;All Questions&apos;.
-          </div>
-        ) : (
-          filteredFaqs.map((faq, idx) => {
-            const isOpen = openIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="rounded-2xl bg-[#0A0F16]/90 border border-[#355E58]/35 overflow-hidden transition-all duration-200"
+      <Stagger className="mx-auto max-w-3xl" stagger={0.06}>
+        <motion.div layout className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {filteredFaqs.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="rounded-2xl border border-[#355E58]/20 bg-[#0A0F16]/60 p-8 text-center text-sm text-zinc-400"
               >
-                <button
-                  onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-white/[0.02] transition"
-                >
-                  <span className="font-display text-base sm:text-lg font-bold text-white">
-                    {faq.question}
-                  </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-zinc-400 shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-[#B89D47]" : ""
+                No matching questions found for &ldquo;{searchQuery}&rdquo;. Try another search term or select &apos;All
+                Questions&apos;.
+              </motion.div>
+            ) : (
+              filteredFaqs.map((faq) => {
+                const isOpen = openQuestion === faq.question;
+                return (
+                  <motion.div
+                    key={faq.question}
+                    layout
+                    variants={itemVariants}
+                    exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2 } }}
+                    className={`overflow-hidden rounded-2xl border bg-[#0A0F16]/90 transition-colors duration-300 ${
+                      isOpen ? "border-[#B89D47]/45 shadow-[0_0_30px_rgba(184,157,71,0.08)]" : "border-[#355E58]/35 hover:border-[#355E58]/70"
                     }`}
-                  />
-                </button>
+                  >
+                    <button
+                      onClick={() => setOpenQuestion(isOpen ? null : faq.question)}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-white/[0.02]"
+                    >
+                      <span className="font-display text-base font-bold text-white sm:text-lg">{faq.question}</span>
+                      <motion.span
+                        animate={{ rotate: isOpen ? 180 : 0, color: isOpen ? "#B89D47" : "#a1a1aa" }}
+                        transition={{ duration: 0.4, ease: EASE }}
+                        className="shrink-0"
+                      >
+                        <ChevronDown className="h-5 w-5" />
+                      </motion.span>
+                    </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-sm text-zinc-300 leading-relaxed border-t border-white/5">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="answer"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.45, ease: EASE }}
+                        >
+                          <div className="border-t border-white/5 px-5 pb-5 pt-3 text-sm leading-relaxed text-zinc-300">
+                            {faq.answer}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </Stagger>
     </section>
   );
 }
-

@@ -32,7 +32,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
   const isHackathon = event.slug === "hackathon" || event.category === "HACKATHON";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fade-in">
+    <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-fade-in">
       <div
         className="relative w-full max-w-2xl rounded-3xl bg-ink-900 border border-white/15 shadow-2xl p-6 sm:p-8 my-auto overflow-hidden max-h-[90vh] flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}

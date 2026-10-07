@@ -509,7 +509,7 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
 
       {/* QR Code Lightbox Modal */}
       {selectedQr && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
           <div className="relative w-full max-w-sm rounded-3xl bg-[#0B0D14] border border-[#D4AF37]/30 p-6 text-center space-y-4 shadow-2xl">
             <button
               onClick={() => setSelectedQr(null)}
@@ -567,7 +567,7 @@ export function DashboardClient({ user, registrations, memberships }: Props) {
 
       {/* Account Settings & Profile / Security Modal */}
       {settingsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
           <div className="bg-[#0D101A] border border-[#D4AF37]/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full relative shadow-2xl space-y-6">
             <button
               onClick={() => {

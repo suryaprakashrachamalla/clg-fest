@@ -118,8 +118,8 @@ export function AdminClient({ user, stats, events, registrations }: Props) {
     tagline: "",
     description: "",
     eligibility: "Open to all students",
-    startsAt: "2026-10-17T10:00",
-    endsAt: "2026-10-17T16:00",
+    startsAt: "2026-10-16T10:00",
+    endsAt: "2026-10-16T16:00",
     venue: "MVSR Campus",
     fee: 100,
     pricingMode: "PER_PARTICIPANT",
@@ -898,7 +898,7 @@ export function AdminClient({ user, stats, events, registrations }: Props) {
 
       {/* Event Edit / Create Modal */}
       {eventModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+        <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
           <div className="relative w-full max-w-2xl rounded-3xl bg-ink-900 border border-white/15 p-6 sm:p-8 my-auto max-h-[90vh] overflow-y-auto space-y-6">
             <h3 className="font-display text-xl font-bold text-white">
               {editingEventId ? "Edit Event" : "Create New Event"}

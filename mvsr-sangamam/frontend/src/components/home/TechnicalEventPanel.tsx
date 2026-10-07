@@ -33,7 +33,7 @@ export default function TechnicalEventPanel({
         soundFx.playHoverBlip();
       }}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative rounded-2xl border border-[#CFB97E]/25 bg-gradient-to-b from-[#0C1118]/95 via-[#080C12]/95 to-[#05080C]/95 backdrop-blur-2xl p-6 sm:p-7 transition-all duration-300 hover:border-[#B89D47] hover:shadow-[0_0_35px_rgba(184,157,71,0.2)] flex flex-col justify-between overflow-hidden"
+      className="group relative h-full rounded-2xl border border-[#CFB97E]/25 bg-gradient-to-b from-[#0C1118]/95 via-[#080C12]/95 to-[#05080C]/95 backdrop-blur-2xl p-6 sm:p-7 transition-all duration-300 hover:border-[#B89D47] hover:shadow-[0_0_35px_rgba(184,157,71,0.2)] flex flex-col justify-between overflow-hidden"
     >
       {/* Top Gold Accent Bar */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#B89D47] to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />

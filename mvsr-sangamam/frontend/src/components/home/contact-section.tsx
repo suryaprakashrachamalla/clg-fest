@@ -1,99 +1,130 @@
-import { MapPin, Mail, Phone, Navigation, Clock, Building2 } from "lucide-react";
+"use client";
+
+import { motion } from "motion/react";
+import { Mail, Navigation, Clock, Building2 } from "lucide-react";
 import { FEST } from "@/config/fest";
+import { SectionHeading, Stagger, StaggerItem } from "@/components/motion/primitives";
+
+function ContactCard({
+  icon,
+  iconColor,
+  title,
+  children,
+  footer,
+}: {
+  icon: React.ReactNode;
+  iconColor: string;
+  title: string;
+  children: React.ReactNode;
+  footer: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 280, damping: 20 }}
+      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#355E58]/35 bg-[#0A0F16]/90 p-6 backdrop-blur-xl transition-colors duration-300 hover:border-[#D4AF37]/40 hover:shadow-[0_20px_60px_-20px_rgba(212,175,55,0.25)] sm:p-8"
+    >
+      <div className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent transition-transform duration-700 group-hover:scale-x-100" />
+      <div className="space-y-4">
+        <div
+          className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#355E58] bg-[#053229] transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+          style={{ color: iconColor }}
+        >
+          {icon}
+        </div>
+        <h3 className="font-display text-xl font-bold text-white">{title}</h3>
+        {children}
+      </div>
+      {footer}
+    </motion.div>
+  );
+}
 
 export function ContactSection() {
   return (
-    <section id="contact" className="section container-x">
-      <div className="text-center max-w-3xl mx-auto mb-12">
-        <div className="eyebrow mb-2 text-[#CFB97E]">GET IN TOUCH & VENUE</div>
-        <h2 className="section-title">
-          Contact & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B89D47] via-[#CFB97E] to-[#B89D47]">Location</span>
-        </h2>
-        <p className="section-sub mx-auto">
-          Need help with registrations, group bookings, or directions to the campus? Our student and faculty conveners are here to help.
-        </p>
-      </div>
+    <section className="section container-x">
+      <SectionHeading
+        eyebrow="Get in touch & venue"
+        title="Contact &"
+        accent="Location"
+        sub="Need help with registrations, group bookings, or directions to the campus? Our student and faculty conveners are here to help."
+      />
 
-      <div className="grid lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {/* Campus Venue Info */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#0A0F16]/90 border border-[#355E58]/35 backdrop-blur-xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#053229] border border-[#355E58] flex items-center justify-center text-[#B89D47]">
-              <Building2 className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-white">
-              Campus Address
-            </h3>
-            <p className="text-sm text-zinc-300 leading-relaxed">
-              Maturi Venkata Subba Rao (MVSR) Engineering College<br />
-              Nadergul, Balapur Mandal,<br />
+      <Stagger className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-3" stagger={0.14}>
+        <StaggerItem className="h-full">
+          <ContactCard
+            icon={<Building2 className="h-6 w-6" />}
+            iconColor="#B89D47"
+            title="Campus Address"
+            footer={
+              <a
+                href={FEST.mapUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-ghost mt-6 flex items-center justify-center gap-2 text-xs hover:border-[#CFB97E]"
+              >
+                <Navigation className="h-4 w-4 text-[#CFB97E]" />
+                Get Google Maps Directions
+              </a>
+            }
+          >
+            <p className="text-sm leading-relaxed text-zinc-300">
+              Maturi Venkata Subba Rao (MVSR) Engineering College
+              <br />
+              Nadergul, Balapur Mandal,
+              <br />
               Hyderabad, Telangana 501510
             </p>
-          </div>
+          </ContactCard>
+        </StaggerItem>
 
-          <a
-            href={FEST.mapUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-ghost text-xs mt-6 flex items-center justify-center gap-2 hover:border-[#CFB97E]"
+        <StaggerItem className="h-full">
+          <ContactCard
+            icon={<Mail className="h-6 w-6" />}
+            iconColor="#CFB97E"
+            title="Registration Helpdesk"
+            footer={
+              <a
+                href={`mailto:${FEST.contact.email}`}
+                className="btn-ghost mt-6 flex items-center justify-center gap-2 text-xs hover:border-[#CFB97E]"
+              >
+                <Mail className="h-4 w-4 text-[#CFB97E]" />
+                Send Email
+              </a>
+            }
           >
-            <Navigation className="w-4 h-4 text-[#CFB97E]" />
-            Get Google Maps Directions
-          </a>
-        </div>
-
-        {/* Support Helpdesk */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#0A0F16]/90 border border-[#355E58]/35 backdrop-blur-xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#053229] border border-[#355E58] flex items-center justify-center text-[#CFB97E]">
-              <Mail className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-white">
-              Registration Helpdesk
-            </h3>
-            <p className="text-sm text-zinc-300 leading-relaxed">
-              Have questions regarding payment verification, QR code tickets, or team invitations? Drop an email to our tech team.
+            <p className="text-sm leading-relaxed text-zinc-300">
+              Have questions regarding payment verification, QR code tickets, or team invitations? Drop an email to our
+              tech team.
             </p>
-            <div className="text-sm font-semibold text-[#CFB97E] truncate">
-              {FEST.contact.email}
-            </div>
-          </div>
+            <div className="truncate text-sm font-semibold text-[#CFB97E]">{FEST.contact.email}</div>
+          </ContactCard>
+        </StaggerItem>
 
-          <a
-            href={`mailto:${FEST.contact.email}`}
-            className="btn-ghost text-xs mt-6 flex items-center justify-center gap-2 hover:border-[#CFB97E]"
+        <StaggerItem className="h-full">
+          <ContactCard
+            icon={<Clock className="h-6 w-6" />}
+            iconColor="#FE9179"
+            title="Fest Hours"
+            footer={
+              <div className="mt-6 rounded-xl border border-white/5 bg-white/[0.03] p-3 text-center text-xs text-zinc-400">
+                Helpdesk open at Main Gate throughout fest days
+              </div>
+            }
           >
-            <Mail className="w-4 h-4 text-[#CFB97E]" />
-            Send Email
-          </a>
-        </div>
-
-        {/* Fest Timings & Desk */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#0A0F16]/90 border border-[#355E58]/35 backdrop-blur-xl flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#053229] border border-[#355E58] flex items-center justify-center text-[#FE9179]">
-              <Clock className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-white">
-              Fest Hours
-            </h3>
             <div className="space-y-2 text-sm text-zinc-300">
               <div>
-                <strong className="text-white block">Day 1 (17 Oct):</strong>
+                <strong className="block text-white">Day 1 ({FEST.days[0].label}):</strong>
                 09:00 AM – Overnight (Hackathon)
               </div>
               <div>
-                <strong className="text-white block">Day 2 (18 Oct):</strong>
+                <strong className="block text-white">Day 2 ({FEST.days[1].label}):</strong>
                 09:00 AM – 07:00 PM (Closing Ceremony)
               </div>
             </div>
-          </div>
-
-          <div className="mt-6 p-3 rounded-xl bg-white/[0.03] border border-white/5 text-xs text-zinc-400 text-center">
-            Helpdesk open at Main Gate throughout fest days
-          </div>
-        </div>
-      </div>
+          </ContactCard>
+        </StaggerItem>
+      </Stagger>
     </section>
   );
 }

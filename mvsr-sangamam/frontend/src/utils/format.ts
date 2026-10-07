@@ -48,11 +48,11 @@ export function fmtDateTime(iso: string | Date) {
   return `${day} ${month} ${year}, ${hours}:${minuteStr} ${ampm}`;
 }
 
-/** "2026-10-17" in IST */
+/** "2026-10-16" in IST */
 export function istDayKey(iso: string | Date | undefined) {
-  if (!iso) return "2026-10-17";
+  if (!iso) return "2026-10-16";
   const ist = toIstDate(iso);
-  if (!ist) return "2026-10-17";
+  if (!ist) return "2026-10-16";
   const y = ist.getUTCFullYear();
   const m = String(ist.getUTCMonth() + 1).padStart(2, "0");
   const d = String(ist.getUTCDate()).padStart(2, "0");

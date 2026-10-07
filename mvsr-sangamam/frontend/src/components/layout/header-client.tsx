@@ -5,7 +5,9 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, X, Volume2, VolumeX, Sparkles, Terminal } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { cx } from "@/lib/format";
+import { EASE } from "@/components/motion/primitives";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -21,6 +23,7 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [soundOn, setSoundOn] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const oscRef = useRef<OscillatorNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
@@ -85,7 +88,10 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
   const isStaff = user && (user.role === "ADMIN" || user.role === "ORGANIZER");
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -90, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
       className={cx(
         "no-print fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled || open
@@ -110,14 +116,22 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary" onMouseLeave={() => setHovered(null)}>
           {NAV.map((n) => (
             <Link
               key={n.href}
               href={n.href}
-              className="rounded-lg px-3.5 py-1.5 text-xs font-medium text-zinc-300 transition hover:bg-white/[0.06] hover:text-[#D4AF37]"
+              onMouseEnter={() => setHovered(n.href)}
+              className="relative rounded-lg px-3.5 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:text-[#D4AF37]"
             >
-              {n.label}
+              {hovered === n.href && (
+                <motion.span
+                  layoutId="nav-hover"
+                  className="absolute inset-0 rounded-lg border border-white/[0.06] bg-white/[0.06]"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
+              <span className="relative">{n.label}</span>
             </Link>
           ))}
         </nav>
@@ -166,8 +180,16 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
       </div>
 
       {/* Mobile Drawer */}
+      <AnimatePresence>
       {open && (
-        <div className="h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-[#08090E]/98 backdrop-blur-2xl lg:hidden">
+        <motion.div
+          data-lenis-prevent
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "calc(100dvh - 4.5rem)" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.45, ease: EASE }}
+          className="overflow-y-auto border-t border-white/10 bg-[#08090E]/98 backdrop-blur-2xl lg:hidden"
+        >
           <nav className="container-x flex flex-col py-6" aria-label="Mobile">
             {NAV.map((n) => (
               <Link
@@ -211,8 +233,9 @@ export function HeaderClient({ user }: { user: { name: string; role: string } | 
               )}
             </div>
           </nav>
-        </div>
+        </motion.div>
       )}
-    </header>
+      </AnimatePresence>
+    </motion.header>
   );
 }

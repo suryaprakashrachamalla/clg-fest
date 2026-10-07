@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 interface CountdownProps {
-  targetDate: string; // ISO string e.g. "2026-10-17T09:00:00+05:30"
+  targetDate: string; // ISO string e.g. "2026-10-16T09:00:00+05:30"
 }
 
 interface TimeLeft {

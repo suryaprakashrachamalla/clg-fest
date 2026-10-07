@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { soundFx } from "@/utils/audio";
 import { EventItemData } from "@/config/flagship-events";
 import {
@@ -34,15 +35,27 @@ export default function RegistrationModal({
   if (!event) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div data-lenis-prevent className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
-      <div
+      <motion.div
         onClick={onClose}
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.35 }}
+        className="fixed inset-0 bg-black/80 backdrop-blur-md"
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative z-10 w-full max-w-2xl rounded-3xl border border-[#D4AF37]/30 bg-[#0A0F16] p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.85)] overflow-hidden my-8">
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        initial={{ opacity: 0, y: 50, scale: 0.94, filter: "blur(10px)" }}
+        animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
+        exit={{ opacity: 0, y: 30, scale: 0.96, filter: "blur(6px)", transition: { duration: 0.25 } }}
+        transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        className="relative z-10 w-full max-w-2xl rounded-3xl border border-[#D4AF37]/30 bg-[#0A0F16] p-6 sm:p-8 shadow-[0_0_60px_rgba(0,0,0,0.85)] overflow-hidden my-8"
+      >
         {/* Top Close Button */}
         <button
           onClick={onClose}
@@ -229,7 +242,7 @@ export default function RegistrationModal({
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

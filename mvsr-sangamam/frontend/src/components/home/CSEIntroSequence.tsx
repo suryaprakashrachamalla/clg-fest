@@ -174,6 +174,7 @@ export default function CSEIntroSequence({ onComplete }: CSEIntroSequenceProps) 
   return (
     <div
       ref={containerRef}
+      data-lenis-prevent
       className="fixed inset-0 z-[999999] h-[100dvh] w-full overflow-hidden bg-black select-none pointer-events-auto"
     >
       {/* Photo Frame Stack (Infinium .frame-wrapper architecture) */}

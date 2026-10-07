@@ -3,6 +3,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { FEST } from "@/config/fest";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
@@ -20,9 +21,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] btn-primary">
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main" className="relative">{children}</main>
-        <SiteFooter />
+        <SmoothScroll>
+          <SiteHeader />
+          <main id="main" className="relative">{children}</main>
+          <SiteFooter />
+        </SmoothScroll>
       </body>
     </html>
   );

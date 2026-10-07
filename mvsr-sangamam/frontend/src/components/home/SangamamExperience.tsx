@@ -1,25 +1,43 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { AnimatePresence } from "motion/react";
 import CSEIntroSequence from "./CSEIntroSequence";
 import DigitalBackground from "./DigitalBackground";
 import FuturisticHero from "./FuturisticHero";
 import EventCategoriesSection from "./EventCategoriesSection";
 import TechRailNav from "./TechRailNav";
 import RegistrationModal from "./RegistrationModal";
+import FestMarquee from "./FestMarquee";
 import { ALL_EVENTS_DATA, EventItemData } from "@/config/flagship-events";
 import { AboutSection } from "./about-section";
 import { ScheduleSection } from "./schedule-section";
 import { FaqSection } from "./faq-section";
 import { ContactSection } from "./contact-section";
 import { soundFx } from "@/utils/audio";
+import { scrollToId } from "@/components/motion/smooth-scroll";
+import { SectionDivider } from "@/components/motion/primitives";
+
+const SCHEDULE_EVENTS = ALL_EVENTS_DATA.map((e) => ({
+  ...e,
+  name: e.title,
+  startsAt: e.slug.includes("comedy")
+    ? "2026-10-17T18:00:00+05:30"
+    : e.slug.includes("music")
+      ? "2026-10-16T16:30:00+05:30"
+      : "2026-10-16T10:00:00+05:30",
+  participationType: e.slug.includes("comedy") ? "INDIVIDUAL" : "TEAM",
+  minTeamSize: e.slug.includes("comedy") ? 1 : 2,
+  maxTeamSize: e.slug.includes("music") ? 6 : e.slug.includes("comedy") ? 1 : 4,
+  feePerParticipantPaise: 20000,
+  accentColor: e.category === "TECHNICAL" ? "gold" : e.category === "SEMITECHNICAL" ? "sage" : "coral",
+})) as any;
 
 export default function SangamamExperience() {
   const [introActive, setIntroActive] = useState<boolean>(true);
   const [selectedEvent, setSelectedEvent] = useState<EventItemData | null>(null);
   const [modalMode, setModalMode] = useState<"register" | "rules">("register");
 
-  // Handle intro completion
   const handleIntroComplete = useCallback(() => {
     setIntroActive(false);
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -27,16 +45,8 @@ export default function SangamamExperience() {
 
   const handleOpenRegister = (eventSlug?: string) => {
     soundFx.playClickTone();
-    if (eventSlug) {
-      const match = ALL_EVENTS_DATA.find((e) => e.slug.includes(eventSlug));
-      if (match) {
-        setSelectedEvent(match);
-        setModalMode("register");
-        return;
-      }
-    }
-    // Default to flagship hackathon
-    setSelectedEvent(ALL_EVENTS_DATA[0]);
+    const match = eventSlug ? ALL_EVENTS_DATA.find((e) => e.slug.includes(eventSlug)) : undefined;
+    setSelectedEvent(match ?? ALL_EVENTS_DATA[0]);
     setModalMode("register");
   };
 
@@ -48,33 +58,27 @@ export default function SangamamExperience() {
 
   return (
     <div className="relative min-h-screen bg-[#08090E] text-white selection:bg-[#D4AF37]/30 selection:text-white">
-      {/* 1. Cinematic Photo Intro Sequence */}
       {introActive && <CSEIntroSequence onComplete={handleIntroComplete} />}
 
-      {/* 2. Evolving Digital Environmental Background */}
       <DigitalBackground />
 
-      {/* 3. Side Navigation Rail */}
-      <TechRailNav />
+      <TechRailNav visible={!introActive} />
 
-      {/* 4. Main Page Content Container */}
       <div
-        className={`relative z-10 transition-opacity duration-700 ${
-          introActive ? "opacity-0 pointer-events-none" : "opacity-100"
+        className={`relative z-10 overflow-x-clip transition-opacity duration-700 ${
+          introActive ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >
-        {/* Hero Section */}
         <FuturisticHero
-          onExploreEvents={() => {
-            const el = document.getElementById("events");
-            el?.scrollIntoView({ behavior: "smooth" });
-          }}
+          ready={!introActive}
+          onExploreEvents={() => scrollToId("events")}
           onOpenRegister={() => handleOpenRegister("hackathon")}
           onReplayIntro={() => setIntroActive(true)}
         />
 
-        {/* Main Flagship Event Categories (Technical, Semitechnical, Cultural) */}
-        <div id="events" className="pt-12 sm:pt-16">
+        <FestMarquee />
+
+        <div id="events">
           <EventCategoriesSection
             onViewDetails={handleViewDetails}
             onRegister={(e) => {
@@ -84,52 +88,41 @@ export default function SangamamExperience() {
           />
         </div>
 
-        {/* Schedule & Timelines */}
+        <SectionDivider />
+
         <div id="schedule">
-          <ScheduleSection
-            events={
-              ALL_EVENTS_DATA.map((e) => ({
-                ...e,
-                startsAt:
-                  e.slug.includes("comedy")
-                    ? "2026-10-18T18:00:00+05:30"
-                    : e.slug.includes("music")
-                    ? "2026-10-17T16:30:00+05:30"
-                    : "2026-10-17T10:00:00+05:30",
-                participationType: e.slug.includes("comedy") ? "INDIVIDUAL" : "TEAM",
-                minTeamSize: e.slug.includes("comedy") ? 1 : 2,
-                maxTeamSize: e.slug.includes("music") ? 6 : e.slug.includes("comedy") ? 1 : 4,
-                feePerParticipantPaise: 20000,
-                accentColor: e.category === "TECHNICAL" ? "gold" : e.category === "SEMITECHNICAL" ? "sage" : "coral",
-              })) as any
-            }
-          />
+          <ScheduleSection events={SCHEDULE_EVENTS} />
         </div>
 
-        {/* About MVSR & Sangamam */}
+        <SectionDivider />
+
         <div id="about">
           <AboutSection />
         </div>
 
-        {/* Frequently Asked Questions */}
-        <div id="faq">
+        <SectionDivider />
+
+        <div id="faqs">
           <FaqSection />
         </div>
 
-        {/* Contact & Venue */}
+        <SectionDivider />
+
         <div id="contact">
           <ContactSection />
         </div>
       </div>
 
-      {/* 5. Clean, Usable Registration & Rules Modal */}
-      {selectedEvent && (
-        <RegistrationModal
-          event={selectedEvent}
-          initialMode={modalMode}
-          onClose={() => setSelectedEvent(null)}
-        />
-      )}
+      <AnimatePresence>
+        {selectedEvent && (
+          <RegistrationModal
+            key={selectedEvent.id}
+            event={selectedEvent}
+            initialMode={modalMode}
+            onClose={() => setSelectedEvent(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

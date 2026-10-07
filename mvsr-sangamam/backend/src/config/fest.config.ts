@@ -14,8 +14,8 @@ export const FEST = {
   endsAt: "2026-10-17T19:00:00+05:30",
   dateLabel: "16–17 October 2026",
   days: [
-    { key: "2026-10-16", label: "16 Oct", long: "friday, 16 October" },
-    { key: "2026-10-17", label: "17 Oct", long: "saturdat, 17 October" },
+    { key: "2026-10-16", label: "16 Oct", long: "Friday, 16 October" },
+    { key: "2026-10-17", label: "17 Oct", long: "Saturday, 17 October" },
   ],
   hackathon: {
     slug: "hackathon",

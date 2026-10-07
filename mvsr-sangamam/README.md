@@ -1,6 +1,6 @@
 # MVSR SANGAMAM 2026 — Official Fest & Hackathon Platform
 
-The official full-stack event website and registration platform for **MVSR Sangamam 2026**, happening on **17th–18th October 2026** at **Maturi Venkata Subba Rao (MVSR) Engineering College**, Nadergul, Hyderabad.
+The official full-stack event website and registration platform for **MVSR Sangamam 2026**, happening on **16th–17th October 2026** at **Maturi Venkata Subba Rao (MVSR) Engineering College**, Nadergul, Hyderabad.
 
 ---
 

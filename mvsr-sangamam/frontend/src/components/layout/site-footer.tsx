@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin } from "lucide-react";
 import { FEST } from "@/config/fest";
+import { FooterWordmark } from "./footer-wordmark";
 
 export function SiteFooter() {
   return (
@@ -33,6 +34,7 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
+      <FooterWordmark />
       <div className="border-t border-white/[0.05] py-5 text-center text-xs text-zinc-600">
         © {FEST.edition} {FEST.name} · MVSR Engineering College. Payments secured by Razorpay.
       </div>

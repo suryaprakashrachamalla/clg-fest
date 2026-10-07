@@ -12,13 +12,13 @@ export const FEST = {
   location: "MVSR Engineering College, Nadergul, Hyderabad",
   locationShort: "Nadergul, Hyderabad",
   mapUrl: "https://maps.google.com/?q=MVSR+Engineering+College+Nadergul",
-  // Fest opens 17 Oct 2026, 09:00 IST and closes 18 Oct 2026
-  startsAt: "2026-10-17T09:00:00+05:30",
-  endsAt: "2026-10-18T19:00:00+05:30",
-  dateLabel: "17–18 October 2026",
+  // Fest opens 16 Oct 2026, 09:00 IST and closes 17 Oct 2026
+  startsAt: "2026-10-16T09:00:00+05:30",
+  endsAt: "2026-10-17T19:00:00+05:30",
+  dateLabel: "16–17 October 2026",
   days: [
+    { key: "2026-10-16", label: "16 Oct", long: "Friday, 16 October" },
     { key: "2026-10-17", label: "17 Oct", long: "Saturday, 17 October" },
-    { key: "2026-10-18", label: "18 Oct", long: "Sunday, 18 October" },
   ],
   hackathon: {
     slug: "hackathon",
@@ -39,7 +39,7 @@ export const FEST = {
     {
       id: "inauguration",
       title: "Inauguration Ceremony",
-      day: "2026-10-17",
+      day: "2026-10-16",
       time: "09:00",
       venue: "Main Auditorium",
       category: "OTHER",
@@ -47,7 +47,7 @@ export const FEST = {
     {
       id: "closing",
       title: "Closing Ceremony & Prize Distribution",
-      day: "2026-10-18",
+      day: "2026-10-17",
       time: "17:30",
       venue: "Main Auditorium",
       category: "OTHER",
