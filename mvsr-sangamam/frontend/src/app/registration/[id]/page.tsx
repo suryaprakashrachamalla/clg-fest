@@ -8,7 +8,8 @@ import { PendingActions, PrintButton, CopyButton } from "./actions";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Your token" };
 
-export default async function RegistrationPage({ params }: { params: { id: string } }) {
+export default async function RegistrationPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const user = await fetchCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/registration/${params.id}`)}`);
 

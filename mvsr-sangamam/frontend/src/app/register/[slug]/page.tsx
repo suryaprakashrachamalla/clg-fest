@@ -6,7 +6,8 @@ import { RegisterFlow } from "./register-flow";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Register" };
 
-export default async function RegisterPage({ params }: { params: { slug: string } }) {
+export default async function RegisterPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const user = await fetchCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/register/${params.slug}`)}`);
 
