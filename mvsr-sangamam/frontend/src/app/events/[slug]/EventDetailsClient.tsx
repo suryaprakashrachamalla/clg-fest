@@ -22,7 +22,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { PublicEvent } from "@/lib/events";
-import { feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/lib/format";
+import { feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/utils/format";
 import { DynamicCapacityBadge } from "@/components/events/dynamic-capacity-badge";
 import RegistrationModal from "@/components/home/RegistrationModal";
 import { EventItemData } from "@/config/flagship-events";

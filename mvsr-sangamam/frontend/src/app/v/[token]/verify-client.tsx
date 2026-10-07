@@ -13,8 +13,8 @@ import {
   ShieldCheck,
   Award,
 } from "lucide-react";
-import { formatINR } from "@/lib/pricing";
-import { fmtDateTime } from "@/lib/format";
+import { formatINR } from "@/utils/pricing";
+import { fmtDateTime } from "@/utils/format";
 import { FEST } from "@/config/fest";
 
 interface Props {

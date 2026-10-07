@@ -1,16 +1,6 @@
 export const SESSION_COOKIE = "sangamam_session";
-export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
 export type SessionPayload = { sub: string; role: "PARTICIPANT" | "ORGANIZER" | "ADMIN"; name: string };
-
-function base64UrlEncode(data: Uint8Array | string): string {
-  const binary = typeof data === "string" ? new TextEncoder().encode(data) : data;
-  let str = "";
-  for (let i = 0; i < binary.length; i++) {
-    str += String.fromCharCode(binary[i]);
-  }
-  return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
 
 function base64UrlDecode(str: string): Uint8Array {
   str = str.replace(/-/g, "+").replace(/_/g, "/");
@@ -32,25 +22,6 @@ async function getKey(): Promise<CryptoKey> {
     false,
     ["sign", "verify"]
   );
-}
-
-export async function signSession(p: SessionPayload): Promise<string> {
-  const header = { alg: "HS256", typ: "JWT" };
-  const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    sub: p.sub,
-    role: p.role,
-    name: p.name,
-    iat: now,
-    exp: now + SESSION_TTL_SECONDS,
-  };
-  const headerPart = base64UrlEncode(JSON.stringify(header));
-  const payloadPart = base64UrlEncode(JSON.stringify(payload));
-  const data = new TextEncoder().encode(`${headerPart}.${payloadPart}`);
-  const key = await getKey();
-  const signature = await crypto.subtle.sign("HMAC", key, data);
-  const sigPart = base64UrlEncode(new Uint8Array(signature));
-  return `${headerPart}.${payloadPart}.${sigPart}`;
 }
 
 export async function verifySession(token: string | undefined): Promise<SessionPayload | null> {

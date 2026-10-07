@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Clock, MapPin, Calendar, ArrowRight, Radio, Sparkles } from "lucide-react";
 import { PublicEvent } from "@/lib/events";
 import { FEST, CATEGORIES } from "@/config/fest";
-import { fmtTime, istDayKey } from "@/lib/format";
+import { fmtTime, istDayKey } from "@/utils/format";
 
 interface ScheduleProps {
   events: PublicEvent[];

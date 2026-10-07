@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getPublicEvent } from "@/lib/events";
 import { ALL_EVENTS_DATA, EventItemData } from "@/config/flagship-events";
-import { feeLabel } from "@/lib/format";
+import { feeLabel } from "@/utils/format";
 import EventDetailsClient from "./EventDetailsClient";
 
 export const dynamic = "force-dynamic";

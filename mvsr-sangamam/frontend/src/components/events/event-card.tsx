@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Calendar, MapPin, Users, User, ArrowRight, ShieldAlert, Sparkles, Zap } from "lucide-react";
 import { PublicEvent } from "@/lib/events";
-import { accentOf, feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/lib/format";
+import { accentOf, feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/utils/format";
 
 interface EventCardProps {
   event: PublicEvent;

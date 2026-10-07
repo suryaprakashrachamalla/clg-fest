@@ -1,4 +1,4 @@
-import { fetchPublicEvents, fetchPublicStats, fetchPublicEvent } from "../services/api";
+import { fetchPublicEvents, fetchPublicEvent } from "../services/api";
 
 export interface Prize {
   place: string;
@@ -207,16 +207,3 @@ export async function getPublicEvent(slug: string): Promise<PublicEvent | null> 
   return match ?? null;
 }
 
-export async function publicStats() {
-  try {
-    const stats = await fetchPublicStats();
-    if (stats) return stats;
-  } catch {}
-  return {
-    events: 3,
-    categories: 3,
-    participants: 1250,
-    hackathonTeamLimit: 50,
-    firstPrize: 25000,
-  };
-}

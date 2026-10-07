@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { LayoutDashboard, LogOut, Menu, ShieldCheck, X, Volume2, VolumeX, Sparkles, Terminal } from "lucide-react";
-import { cx } from "@/lib/format";
+import { cx } from "@/utils/format";
 
 const NAV = [
   { href: "/", label: "Home" },

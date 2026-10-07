@@ -19,7 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { FEST } from "@/config/fest";
-import { fmtDate, fmtTime, formatINR } from "@/lib/format";
+import { fmtDate, fmtTime, formatINR } from "@/utils/format";
 
 interface Props {
   registration: {

@@ -7,11 +7,11 @@ interface CSEIntroSequenceProps {
   onComplete: () => void;
 }
 
-// Exactly 12 unique photos from PHOTOS folder, each appearing once
+// Exactly 12 unique photos, each appearing once
 const INTRO_PHOTOS = [
   "/intro-photos/photo-5.png",   // 1. Machine Cycle
   "/intro-photos/photo-2.png",   // 2. Vintage Computer (hi)
-  "/intro-photos/photo-12.png",  // 3. Chess Pieces (16662.png)
+  "/intro-photos/photo-12.png",  // 3. Chess Pieces
   "/intro-photos/photo-8.png",   // 4. n! >>> n Complexity Graph
   "/intro-photos/photo-3.png",   // 5. 2^8 = 256 Binary
   "/intro-photos/photo-10.png",  // 6. What the heck Error Box

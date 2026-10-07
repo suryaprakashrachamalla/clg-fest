@@ -17,9 +17,9 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { PublicEvent } from "@/lib/events";
-import { computeAmount, formatINR } from "@/lib/pricing";
+import { computeAmount, formatINR } from "@/utils/pricing";
 import { loadRazorpayScript } from "@/lib/load-razorpay";
-import { fmtDate, fmtTime } from "@/lib/format";
+import { fmtDate, fmtTime } from "@/utils/format";
 
 interface Props {
   event: PublicEvent;

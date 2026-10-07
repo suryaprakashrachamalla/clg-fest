@@ -66,6 +66,3 @@ export const CATEGORIES = [
 
 export type CategoryKey = (typeof CATEGORIES)[number]["key"];
 
-export function categoryLabel(key: string) {
-  return CATEGORIES.find((c) => c.key === key)?.label ?? key;
-}
