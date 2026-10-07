@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { X, Calendar, MapPin, Trophy, Users, CheckCircle2, Phone, Mail, ArrowRight, HelpCircle } from "lucide-react";
 import { PublicEvent } from "@/lib/events";
-import { feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/lib/format";
+import { feeLabel, fmtDate, fmtTime, teamSizeLabel } from "@/utils/format";
 
 interface EventModalProps {
   event: PublicEvent | null;

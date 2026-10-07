@@ -49,25 +49,8 @@ export async function fetchPublicEvents() {
   return events ?? [];
 }
 
-export async function fetchPublicStats() {
-  const stats = await serverFetch<any>("/api/events/stats");
-  return (
-    stats ?? {
-      events: 0,
-      categories: 0,
-      participants: 0,
-      hackathonTeamLimit: 50,
-      firstPrize: 20000,
-    }
-  );
-}
-
 export async function fetchPublicEvent(slug: string) {
   return serverFetch<any>(`/api/events/${slug}`);
-}
-
-export async function fetchEventAvailability(slug: string) {
-  return serverFetch<any>(`/api/events/${slug}/availability`);
 }
 
 export async function fetchCurrentUser() {

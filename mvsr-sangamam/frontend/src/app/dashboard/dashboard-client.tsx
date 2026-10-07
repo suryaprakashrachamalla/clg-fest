@@ -28,7 +28,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { FEST } from "@/config/fest";
-import { fmtDate, fmtTime, formatINR } from "@/lib/format";
+import { fmtDate, fmtTime, formatINR } from "@/utils/format";
 import { soundFx } from "@/utils/audio";
 
 interface RegistrationItem {

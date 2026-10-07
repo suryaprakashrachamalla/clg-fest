@@ -23,10 +23,7 @@
 ```
 SANGAGMAM/
 ├── AGENTS.md                          # Workspace-level context & agent guide
-├── agent.md                           # Symlink / alias for AGENTS.md
 └── mvsr-sangamam/                     # Main project workspace
-    ├── AGENTS.md                      # Inner project context documentation
-    ├── agent.md                       # Symlink / alias
     ├── .env                           # Environment configuration
     ├── .env.example                   # Annotated sample environment config
     ├── .gitignore                     # Git ignore rules (node_modules, .pg-data, .next, dist)
