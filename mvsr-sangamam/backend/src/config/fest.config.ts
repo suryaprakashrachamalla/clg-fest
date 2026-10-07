@@ -12,7 +12,7 @@ export const FEST = {
   mapUrl: "https://maps.google.com/?q=MVSR+Engineering+College+Nadergul",
   startsAt: "2026-10-17T09:00:00+05:30",
   endsAt: "2026-10-18T19:00:00+05:30",
-  dateLabel: "17–18 October 2026",
+  dateLabel: "16–17 October 2026",
   days: [
     { key: "2026-10-17", label: "17 Oct", long: "Saturday, 17 October" },
     { key: "2026-10-18", label: "18 Oct", long: "Sunday, 18 October" },
